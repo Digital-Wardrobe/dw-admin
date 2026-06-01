@@ -18,6 +18,30 @@ export default function UserManagement() {
   const [newPassword, setNewPassword] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
+  const handleDatabaseMutation = async (userId: string, updatePayload: object) => {
+    try {
+      const token = localStorage.getItem('admin_session_token');
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const API_URL = isLocal 
+        ? 'http://localhost:3000/api/admin' 
+        : import.meta.env.VITE_API_URL;
+      const BASE_URL = `${API_URL}/update-user-status/${userId}`;
+
+      const res = await axios.patch(BASE_URL, updatePayload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.data.success) {
+        // Instantly update local UI view states and re-pull the active directory grid
+        setInspectorUser((prev: any) => ({ ...prev, ...res.data.data }));
+        fetchUsers();
+      }
+    } catch (err) {
+      console.error("Failed to commit database cell update:", err);
+      alert("Database mutation execution rejected by cloud environment parameters.");
+    }
+  };
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
@@ -234,6 +258,29 @@ export default function UserManagement() {
                         <div className="text-lg font-black text-white">{inspectorUser?.metrics?.collectionsCount}</div>
                         <div className="text-[9px] text-gray-500 uppercase mt-0.5">Collections</div>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Direct Database Write Manipulation Grid */}
+                  <div className="space-y-2 mt-4 pt-4 border-t border-[#1E293B]">
+                    <h3 className="text-[10px] uppercase font-bold text-[#475569] tracking-wider">Database Direct Control Matrix</h3>
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <button 
+                        onClick={() => handleDatabaseMutation(inspectorUser.id, { role: inspectorUser.role === 'ADMIN' ? 'USER' : 'ADMIN' })}
+                        className="bg-indigo-950/40 hover:bg-indigo-600 border border-indigo-900/40 text-indigo-400 hover:text-white font-bold py-2 px-3 rounded-lg font-mono transition-all text-center cursor-pointer"
+                      >
+                        {inspectorUser?.role === 'ADMIN' ? "Demote to User" : "Promote to Admin"}
+                      </button>
+                      <button 
+                        onClick={() => handleDatabaseMutation(inspectorUser.id, { isOnboarded: !inspectorUser.isOnboarded })}
+                        className={`font-bold py-2 px-3 rounded-lg font-mono transition-all text-center cursor-pointer border ${
+                          inspectorUser?.isOnboarded 
+                            ? 'bg-red-950/30 border-red-900/40 text-red-400 hover:bg-red-600 hover:text-white' 
+                            : 'bg-emerald-950/30 border-emerald-900/40 text-emerald-400 hover:bg-emerald-600 hover:text-white'
+                        }`}
+                      >
+                        {inspectorUser?.isOnboarded ? "Suspend Account" : "Activate Account"}
+                      </button>
                     </div>
                   </div>
 
