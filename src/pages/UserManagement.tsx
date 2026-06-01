@@ -264,16 +264,10 @@ export default function UserManagement() {
                   {/* Direct Database Write Manipulation Grid */}
                   <div className="space-y-2 mt-4 pt-4 border-t border-[#1E293B]">
                     <h3 className="text-[10px] uppercase font-bold text-[#475569] tracking-wider">Database Direct Control Matrix</h3>
-                    <div className="grid grid-cols-2 gap-3 text-xs">
-                      <button 
-                        onClick={() => handleDatabaseMutation(inspectorUser.id, { role: inspectorUser.role === 'ADMIN' ? 'USER' : 'ADMIN' })}
-                        className="bg-indigo-950/40 hover:bg-indigo-600 border border-indigo-900/40 text-indigo-400 hover:text-white font-bold py-2 px-3 rounded-lg font-mono transition-all text-center cursor-pointer"
-                      >
-                        {inspectorUser?.role === 'ADMIN' ? "Demote to User" : "Promote to Admin"}
-                      </button>
+                    <div className="text-xs">
                       <button 
                         onClick={() => handleDatabaseMutation(inspectorUser.id, { isOnboarded: !inspectorUser.isOnboarded })}
-                        className={`font-bold py-2 px-3 rounded-lg font-mono transition-all text-center cursor-pointer border ${
+                        className={`w-full font-bold py-2.5 px-3 rounded-lg font-mono transition-all text-center cursor-pointer border ${
                           inspectorUser?.isOnboarded 
                             ? 'bg-red-950/30 border-red-900/40 text-red-400 hover:bg-red-600 hover:text-white' 
                             : 'bg-emerald-950/30 border-emerald-900/40 text-emerald-400 hover:bg-emerald-600 hover:text-white'
