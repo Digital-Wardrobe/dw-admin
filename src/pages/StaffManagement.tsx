@@ -20,9 +20,12 @@ export default function StaffManagement() {
     try {
       const token = localStorage.getItem('admin_session_token');
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const API_URL = isLocal ? 'http://localhost:3000/api/admin/create-staff' : 'https://api.fluntr.com/api/v1/admin/create-staff';
+      const API_URL = isLocal 
+        ? 'http://localhost:3000/api/admin' 
+        : import.meta.env.VITE_API_URL;
+      const url = `${API_URL}/create-staff`;
 
-      const res = await axios.post(API_URL, {
+      const res = await axios.post(url, {
         email, username, profileName, initialPassword, roleAssign
       }, { headers: { Authorization: `Bearer ${token}` } });
 

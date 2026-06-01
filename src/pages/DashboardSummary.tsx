@@ -23,10 +23,11 @@ export default function DashboardSummary() {
         // Detect if running locally or in production
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_URL = isLocal 
-          ? 'http://localhost:3000/api/admin/dashboard-summary' 
-          : 'https://api.fluntr.com/api/v1/admin/dashboard-summary';
+          ? 'http://localhost:3000/api/admin' 
+          : import.meta.env.VITE_API_URL;
+        const url = `${API_URL}/dashboard-summary`;
 
-        const res = await axios.get(API_URL, {
+        const res = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.success) {

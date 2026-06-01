@@ -24,10 +24,11 @@ export default function UserManagement() {
       const token = localStorage.getItem('admin_session_token');
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       const API_URL = isLocal 
-        ? `http://localhost:3000/api/admin/users-directory?search=${search}&page=${page}`
-        : `https://api.fluntr.com/api/v1/admin/users-directory?search=${search}&page=${page}`;
+        ? 'http://localhost:3000/api/admin' 
+        : import.meta.env.VITE_API_URL;
+      const url = `${API_URL}/users-directory?search=${search}&page=${page}`;
 
-      const res = await axios.get(API_URL, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.success) {
         setUsers(res.data.data.users);
         setTotalPages(res.data.data.totalPages);
@@ -45,11 +46,12 @@ export default function UserManagement() {
     try {
       const token = localStorage.getItem('admin_session_token');
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const PROFILE_URL = isLocal 
-        ? `http://localhost:3000/api/admin/user-profile-deep/${userId}`
-        : `https://api.fluntr.com/api/v1/admin/user-profile-deep/${userId}`;
+      const API_URL = isLocal 
+        ? 'http://localhost:3000/api/admin' 
+        : import.meta.env.VITE_API_URL;
+      const url = `${API_URL}/user-profile-deep/${userId}`;
 
-      const res = await axios.get(PROFILE_URL, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.success) setInspectorUser(res.data.data);
     } catch (err) {
       console.error("Failed deep profile data pull:", err);
@@ -64,11 +66,12 @@ export default function UserManagement() {
     try {
       const token = localStorage.getItem('admin_session_token');
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const RESET_URL = isLocal 
-        ? 'http://localhost:3000/api/admin/force-password-reset' 
-        : 'https://api.fluntr.com/api/v1/admin/force-password-reset';
+      const API_URL = isLocal 
+        ? 'http://localhost:3000/api/admin' 
+        : import.meta.env.VITE_API_URL;
+      const url = `${API_URL}/force-password-reset`;
       
-      const res = await axios.post(RESET_URL, { 
+      const res = await axios.post(url, { 
         userId: selectedUser.id, 
         newPassword 
       }, { 

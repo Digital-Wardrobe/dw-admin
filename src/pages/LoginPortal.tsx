@@ -25,11 +25,19 @@ export default function LoginPortal() {
 
     try {
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const LOGIN_URL = isLocal 
-        ? 'http://localhost:3000/api/auth/login' 
-        : 'https://api.fluntr.com/api/v1/auth/login';
+      const API_URL = isLocal 
+        ? 'http://localhost:3000/api/admin' 
+        : import.meta.env.VITE_API_URL;
+      
+      // Clean up trailing slashes, then cleanly target the standalone global auth router branch
+      const cleanBaseUrl = API_URL ? API_URL.replace(/\/$/, '') : '';
+      const loginUrl = cleanBaseUrl.endsWith('/admin')
+        ? `${cleanBaseUrl.replace(/\/admin$/, '')}/auth/login`
+        : `${cleanBaseUrl}/auth/login`;
 
-      const res = await axios.post(LOGIN_URL, {
+      console.log("📡 Active Uplink Handshake Target:", loginUrl);
+
+      const res = await axios.post(loginUrl, {
         identifier: identifier.trim(),
         password: password
       });

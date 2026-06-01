@@ -16,7 +16,10 @@ export default function BusinessMetrics() {
     try {
       const token = localStorage.getItem('admin_session_token');
       const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const base = isLocal ? 'http://localhost:3000/api/admin/activation-analytics' : 'https://api.fluntr.com/api/v1/admin/activation-analytics';
+      const API_URL = isLocal 
+        ? 'http://localhost:3000/api/admin' 
+        : import.meta.env.VITE_API_URL;
+      const base = `${API_URL}/activation-analytics`;
       const url = force ? `${base}?force=true&startDate=${startDate}&endDate=${endDate}` : `${base}?startDate=${startDate}&endDate=${endDate}`;
 
       const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });

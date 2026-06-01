@@ -12,10 +12,11 @@ export default function InfrastructureMetrics() {
         const token = localStorage.getItem('admin_session_token');
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_URL = isLocal 
-          ? 'http://localhost:3000/api/admin/infrastructure-diagnostics'
-          : 'https://api.fluntr.com/api/v1/admin/infrastructure-diagnostics';
+          ? 'http://localhost:3000/api/admin' 
+          : import.meta.env.VITE_API_URL;
+        const url = `${API_URL}/infrastructure-diagnostics`;
 
-        const res = await axios.get(API_URL, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
         if (res.data.success) setInfra(res.data.data);
       } catch (err) {
         console.error("Infrastructure lookup fault:", err);
