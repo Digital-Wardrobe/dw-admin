@@ -29,13 +29,14 @@ export default function LoginPortal() {
         ? 'http://localhost:3000/api/admin' 
         : import.meta.env.VITE_API_URL;
       
-      // Clean up trailing slashes, then cleanly target the standalone global auth router branch
+      // Ensure clean trailing characters, then map accurately to the standalone /v1/auth tier
       const cleanBaseUrl = API_URL ? API_URL.replace(/\/$/, '') : '';
-      const loginUrl = cleanBaseUrl.endsWith('/admin')
-        ? `${cleanBaseUrl.replace(/\/admin$/, '')}/auth/login`
-        : `${cleanBaseUrl}/auth/login`;
+      
+      const loginUrl = isLocal
+        ? 'http://localhost:3000/auth/login'
+        : `${cleanBaseUrl.replace(/\/api\/v1\/admin$/, '')}/v1/auth/login`;
 
-      console.log("📡 Active Uplink Handshake Target:", loginUrl);
+      console.log("📡 Corrected Live Uplink Target:", loginUrl);
 
       const res = await axios.post(loginUrl, {
         identifier: identifier.trim(),
