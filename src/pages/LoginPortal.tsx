@@ -24,19 +24,15 @@ export default function LoginPortal() {
     setAuthError(false);
 
     try {
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const API_URL = isLocal 
-        ? 'http://localhost:3000/api/admin' 
-        : import.meta.env.VITE_API_URL;
-      
-      // Strip any trailing slashes cleanly
-      const cleanBaseUrl = API_URL ? API_URL.replace(/\/$/, '') : '';
-      
-      // Route flawlessly into the true /api/auth namespace
-      const loginUrl = isLocal
-        ? 'http://localhost:3000/api/auth/login'
-        : `${cleanBaseUrl.replace(/\/admin$/, '')}/auth/login`;
+      // Pull the verified environment target directly from the local build shell
+      const BASE_API_URL = import.meta.env.VITE_API_BASE_URL;
 
+      if (!BASE_API_URL) {
+        throw new Error("Configuration Error: API Base Target Context Missing.");
+      }
+
+      // Construct your target endpoint URL dynamically
+      const loginUrl = `${BASE_API_URL.replace(/\/$/, '').replace(/\/admin$/, '')}/auth/login`;
       console.log("📡 Target True API Auth Handshake:", loginUrl);
 
       const res = await axios.post(loginUrl, {

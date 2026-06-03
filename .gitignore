@@ -24,3 +24,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Block local dev overrides from leaking to your public GitHub repository
+.env.local
+.env.development.local
+.env.production.local
+

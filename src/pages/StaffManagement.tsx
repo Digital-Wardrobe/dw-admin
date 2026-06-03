@@ -19,11 +19,8 @@ export default function StaffManagement() {
 
     try {
       const token = localStorage.getItem('admin_session_token');
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      const API_URL = isLocal 
-        ? 'http://localhost:3000/api/admin' 
-        : import.meta.env.VITE_API_URL;
-      const url = `${API_URL}/create-staff`;
+      const API_URL = import.meta.env.VITE_API_BASE_URL;
+      const url = `${API_URL}create-staff`;
 
       const res = await axios.post(url, {
         email, username, profileName, initialPassword, roleAssign
