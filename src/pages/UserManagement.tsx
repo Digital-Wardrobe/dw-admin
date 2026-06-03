@@ -2,14 +2,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Search, KeyRound, CheckCircle2, XCircle, Wifi, MapPin, Shirt, FolderHeart, X, HardDrive, Trash2, AlertTriangle } from 'lucide-react';
 
-// ── Utility: format bytes ─────────────────────────────────────────────────────
-function formatBytes(bytes: number): string {
-  if (!bytes || bytes === 0) return '0 B';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
 export default function UserManagement() {
   const [users, setUsers]           = useState([]);
   const [search, setSearch]         = useState('');
