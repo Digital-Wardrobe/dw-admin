@@ -25,7 +25,7 @@ export default function LoginPortal() {
 
     try {
       // Pull the verified environment target directly from the local build shell
-      const BASE_API_URL = import.meta.env.VITE_API_BASE_URL;
+      const BASE_API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.fluntr.com/api/admin/';
 
       if (!BASE_API_URL) {
         throw new Error("Configuration Error: API Base Target Context Missing.");
