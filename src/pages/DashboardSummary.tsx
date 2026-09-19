@@ -20,7 +20,7 @@ export default function DashboardSummary() {
           return;
         }
 
-        const API_URL = import.meta.env.VITE_API_BASE_URL;
+        const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.fluntr.com/api/admin/';
         const url = `${API_URL}dashboard-summary`;
 
         const res = await axios.get(url, {

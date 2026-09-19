@@ -19,7 +19,7 @@ export default function StaffManagement() {
 
     try {
       const token = localStorage.getItem('admin_session_token');
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
+      const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.fluntr.com/api/admin/';
       const url = `${API_URL}create-staff`;
 
       const res = await axios.post(url, {

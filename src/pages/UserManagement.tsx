@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Search, KeyRound, CheckCircle2, XCircle, Wifi, MapPin, Shirt, FolderHeart, X, HardDrive, Trash2, AlertTriangle } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.fluntr.com/api/admin/';
+
 export default function UserManagement() {
   const [users, setUsers]           = useState([]);
   const [search, setSearch]         = useState('');
@@ -28,7 +30,6 @@ export default function UserManagement() {
   const handleDatabaseMutation = async (userId: string, updatePayload: object) => {
     try {
       const token = localStorage.getItem('admin_session_token');
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
       const res = await axios.patch(`${API_URL}update-user-status/${userId}`, updatePayload, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -46,7 +47,6 @@ export default function UserManagement() {
     setLoading(true);
     try {
       const token = localStorage.getItem('admin_session_token');
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
       const res = await axios.get(
         `${API_URL}users-directory?search=${search}&page=${page}`,
         { headers: { Authorization: `Bearer ${token}` } }
@@ -68,7 +68,6 @@ export default function UserManagement() {
     setDeleteResult(null);
     try {
       const token = localStorage.getItem('admin_session_token');
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
       const res = await axios.get(`${API_URL}user-profile-deep/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -85,7 +84,6 @@ export default function UserManagement() {
     }
     try {
       const token = localStorage.getItem('admin_session_token');
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
       const res = await axios.post(
         `${API_URL}force-password-reset`,
         { userId: selectedUser.id, newPassword },
@@ -114,7 +112,6 @@ export default function UserManagement() {
     setDeleteRunning(true);
     try {
       const token = localStorage.getItem('admin_session_token');
-      const API_URL = import.meta.env.VITE_API_BASE_URL;
       const res = await axios.delete(`${API_URL}storage/asset`, {
         headers: { Authorization: `Bearer ${token}` },
         data: { itemId: deleteAssetId }
