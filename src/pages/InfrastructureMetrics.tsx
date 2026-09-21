@@ -37,7 +37,7 @@ export default function InfrastructureMetrics() {
     try {
       const token = localStorage.getItem('admin_session_token');
       const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.fluntr.com/api/admin/';
-      const url = `${API_URL}infrastructure-metrics${force ? '?force=true' : ''}`;
+      const url = `${API_URL}infra-metrics${force ? '?force=true' : ''}`;
       const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.success) setInfra(res.data.data);
     } catch (err) {
