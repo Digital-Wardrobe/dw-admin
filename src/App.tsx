@@ -12,7 +12,7 @@ import AuthGuard from './components/AuthGuard';
 
 /* Section names are what an operator would call them, not what an internal
    service is named. "Terminate Link" and "Cloud Resources" made people guess. */
-const NAV = [
+export const NAV = [
   { path: '/admin/dashboard', name: 'Overview',      icon: LayoutDashboard },
   { path: '/admin/business',  name: 'Growth',        icon: TrendingUp },
   { path: '/admin/users',     name: 'Users',         icon: Users },
@@ -20,7 +20,7 @@ const NAV = [
   { path: '/admin/staff',     name: 'Team',          icon: UserPlus },
 ];
 
-function AdminLayout({ children }: { children: React.ReactNode }) {
+export function AdminLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -43,11 +43,11 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
       </a>
 
       <aside
-        className="fixed inset-y-0 left-0 z-20 flex w-60 flex-col justify-between border-r border-ink-700 bg-ink-850"
+        className="fixed inset-x-0 top-0 z-20 flex flex-col border-b border-ink-700 bg-ink-850 lg:inset-y-0 lg:right-auto lg:w-60 lg:justify-between lg:border-b-0 lg:border-r"
         aria-label="Console sections"
       >
         <div>
-          <div className="flex items-center gap-3 border-b border-ink-700 px-5 py-5">
+          <div className="flex items-center gap-3 px-5 py-4 lg:border-b lg:border-ink-700 lg:py-5">
             <span
               aria-hidden="true"
               className="flex h-9 w-9 items-center justify-center rounded-inner border border-brand-line bg-brand-wash font-mono text-sm font-semibold tracking-tight text-brand"
@@ -60,16 +60,16 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <nav className="p-3">
-            <ul className="space-y-0.5">
+          <nav className="px-3 pb-3 lg:p-3">
+            <ul className="flex gap-1 overflow-x-auto lg:block lg:space-y-0.5 lg:overflow-visible">
               {NAV.map(({ path, name, icon: Icon }) => {
                 const active = location.pathname === path;
                 return (
-                  <li key={path}>
+                  <li key={path} className="shrink-0">
                     <Link
                       to={path}
                       aria-current={active ? 'page' : undefined}
-                      className={`relative flex items-center gap-3 rounded-inner px-3 py-2 text-sm transition
+                      className={`relative flex items-center gap-2 whitespace-nowrap rounded-inner px-3 py-2 text-sm transition lg:gap-3
                         ${active
                           ? 'bg-brand-wash font-medium text-brand'
                           : 'text-ink-300 hover:bg-ink-800 hover:text-ink-100'}`}
@@ -77,7 +77,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
                       {/* The active marker is a rail, not a filled block —
                           it reads as position rather than as a button. */}
                       {active && (
-                        <span aria-hidden="true" className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-brand" />
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-brand lg:inset-x-auto lg:inset-y-1.5 lg:left-0 lg:h-auto lg:w-0.5"
+                        />
                       )}
                       <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
                       {name}
@@ -90,7 +93,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* One sign-out in the whole console. Pages used to carry their own. */}
-        <div className="border-t border-ink-700 p-3">
+        <div className="hidden border-ink-700 p-3 lg:block lg:border-t">
           <button
             onClick={signOut}
             className="flex w-full items-center gap-3 rounded-inner px-3 py-2 text-sm text-ink-300 transition hover:bg-ink-800 hover:text-bad active:translate-y-px"
@@ -101,10 +104,10 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <main id="main" className="pl-60">
+      <main id="main" className="pt-[116px] lg:pl-60 lg:pt-0">
         {/* Bottom padding slightly exceeds top so the page reads optically
             centred rather than mathematically so. */}
-        <div className="mx-auto w-full max-w-[1400px] px-8 pb-14 pt-8">
+        <div className="mx-auto w-full max-w-[1400px] px-4 pb-14 pt-6 sm:px-6 lg:px-8 lg:pt-8">
           {current && <p className="sr-only">{current.name}</p>}
           {children}
         </div>
