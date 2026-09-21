@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
-import { LayoutDashboard, BarChart3, Users, HardDrive, UserPlus, LogOut } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Users, Server, UserPlus, LogOut } from 'lucide-react';
 
 import DashboardSummary from './pages/DashboardSummary';
 import BusinessMetrics from './pages/BusinessMetrics';
@@ -10,76 +10,102 @@ import StaffManagement from './pages/StaffManagement';
 import LoginPortal from './pages/LoginPortal';
 import AuthGuard from './components/AuthGuard';
 
+/* Section names are what an operator would call them, not what an internal
+   service is named. "Terminate Link" and "Cloud Resources" made people guess. */
+const NAV = [
+  { path: '/admin/dashboard', name: 'Overview',      icon: LayoutDashboard },
+  { path: '/admin/business',  name: 'Growth',        icon: TrendingUp },
+  { path: '/admin/users',     name: 'Users',         icon: Users },
+  { path: '/admin/infra',     name: 'Infrastructure',icon: Server },
+  { path: '/admin/staff',     name: 'Team',          icon: UserPlus },
+];
+
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogOut = () => {
+  const signOut = () => {
     localStorage.removeItem('admin_session_token');
+    localStorage.removeItem('admin_user');
     navigate('/portal/secure-gateway-entry');
   };
 
-  const navItems = [
-    { path: '/admin/dashboard', name: 'Overview Console', icon: <LayoutDashboard size={16} /> },
-    { path: '/admin/business', name: 'Growth Analytics', icon: <BarChart3 size={16} /> },
-    { path: '/admin/users', name: 'User Directory', icon: <Users size={16} /> },
-    { path: '/admin/infra', name: 'Cloud Resources', icon: <HardDrive size={16} /> },
-    { path: '/admin/staff', name: 'Staff Provisioning', icon: <UserPlus size={16} /> },
-  ];
+  const current = NAV.find(i => i.path === location.pathname);
 
   return (
-    <div className="flex min-h-screen w-full bg-[#0B0F19] text-[#E2E8F0] font-sans antialiased selection:bg-indigo-500 selection:text-white">
-      {/* Modern Left Navigation Sidebar */}
-      <aside className="w-64 border-r border-[#1E293B] bg-[#0F172A] flex flex-col justify-between fixed h-full z-10">
+    <div className="grain min-h-dvh bg-ink-900 text-ink-100 antialiased selection:bg-brand/30 selection:text-ink-50">
+      {/* Keyboard users need a way past the navigation. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-inner focus:bg-ink-800 focus:px-4 focus:py-2 focus:text-sm focus:text-ink-50"
+      >
+        Skip to content
+      </a>
+
+      <aside
+        className="fixed inset-y-0 left-0 z-20 flex w-60 flex-col justify-between border-r border-ink-700 bg-ink-850"
+        aria-label="Console sections"
+      >
         <div>
-          {/* Premium Brand Header */}
-          <div className="p-6 border-b border-[#1E293B] flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 font-mono text-sm font-black text-white tracking-tighter">
-              FL
-            </div>
-            <div>
-              <h2 className="text-xs font-black tracking-widest uppercase text-white font-mono">Fluntr Engine</h2>
-              <p className="text-[10px] text-[#64748B] font-mono tracking-tight">HQ Control // v1.0</p>
+          <div className="flex items-center gap-3 border-b border-ink-700 px-5 py-5">
+            <span
+              aria-hidden="true"
+              className="flex h-9 w-9 items-center justify-center rounded-inner border border-brand-line bg-brand-wash font-mono text-sm font-semibold tracking-tight text-brand"
+            >
+              F
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold tracking-tight text-ink-50">Fluntr</p>
+              <p className="truncate text-label text-ink-400">Admin console</p>
             </div>
           </div>
 
-          {/* Nav Link Items */}
-          <nav className="p-4 space-y-1">
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-semibold font-mono tracking-wide transition-all ${
-                    isActive 
-                      ? 'bg-indigo-600 text-white shadow-sm' 
-                      : 'text-[#94A3B8] hover:text-white hover:bg-[#1E293B]/60'
-                  }`}
-                >
-                  {item.icon}
-                  {item.name}
-                </Link>
-              );
-            })}
+          <nav className="p-3">
+            <ul className="space-y-0.5">
+              {NAV.map(({ path, name, icon: Icon }) => {
+                const active = location.pathname === path;
+                return (
+                  <li key={path}>
+                    <Link
+                      to={path}
+                      aria-current={active ? 'page' : undefined}
+                      className={`relative flex items-center gap-3 rounded-inner px-3 py-2 text-sm transition
+                        ${active
+                          ? 'bg-brand-wash font-medium text-brand'
+                          : 'text-ink-300 hover:bg-ink-800 hover:text-ink-100'}`}
+                    >
+                      {/* The active marker is a rail, not a filled block —
+                          it reads as position rather than as a button. */}
+                      {active && (
+                        <span aria-hidden="true" className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-brand" />
+                      )}
+                      <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+                      {name}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
         </div>
 
-        {/* Bottom Action Section */}
-        <div className="p-4 border-t border-[#1E293B]">
-          <button 
-            onClick={handleLogOut}
-            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold font-mono text-red-400 hover:bg-red-950/30 hover:text-red-300 transition-all cursor-pointer border-none outline-none"
+        {/* One sign-out in the whole console. Pages used to carry their own. */}
+        <div className="border-t border-ink-700 p-3">
+          <button
+            onClick={signOut}
+            className="flex w-full items-center gap-3 rounded-inner px-3 py-2 text-sm text-ink-300 transition hover:bg-ink-800 hover:text-bad active:translate-y-px"
           >
-            <LogOut size={16} />
-            Terminate Link
+            <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
+            Sign out
           </button>
         </div>
       </aside>
 
-      {/* Right View Window Main Workspace */}
-      <main className="flex-1 pl-64 w-full">
-        <div className="p-8 w-full max-w-[1400px] mx-auto">
+      <main id="main" className="pl-60">
+        {/* Bottom padding slightly exceeds top so the page reads optically
+            centred rather than mathematically so. */}
+        <div className="mx-auto w-full max-w-[1400px] px-8 pb-14 pt-8">
+          {current && <p className="sr-only">{current.name}</p>}
           {children}
         </div>
       </main>
@@ -87,17 +113,24 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
+const guarded = (el: React.ReactNode) => (
+  <AuthGuard><AdminLayout>{el}</AdminLayout></AuthGuard>
+);
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/portal/secure-gateway-entry" element={<LoginPortal />} />
-        <Route path="/admin/dashboard" element={<AuthGuard><AdminLayout><DashboardSummary /></AdminLayout></AuthGuard>} />
-        <Route path="/admin/business" element={<AuthGuard><AdminLayout><BusinessMetrics /></AdminLayout></AuthGuard>} />
-        <Route path="/admin/users" element={<AuthGuard><AdminLayout><UserManagement /></AdminLayout></AuthGuard>} />
-        <Route path="/admin/infra" element={<AuthGuard><AdminLayout><InfrastructureMetrics /></AdminLayout></AuthGuard>} />
-        <Route path="/admin/staff" element={<AuthGuard><AdminLayout><StaffManagement /></AdminLayout></AuthGuard>} />
-        <Route path="*" element={<LoginPortal />} />
+        <Route path="/admin/dashboard" element={guarded(<DashboardSummary />)} />
+        <Route path="/admin/business"  element={guarded(<BusinessMetrics />)} />
+        <Route path="/admin/users"     element={guarded(<UserManagement />)} />
+        <Route path="/admin/infra"     element={guarded(<InfrastructureMetrics />)} />
+        <Route path="/admin/staff"     element={guarded(<StaffManagement />)} />
+        {/* Unknown paths used to render the login form in place, which made a
+            typo look like a logout. Redirect instead. */}
+        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

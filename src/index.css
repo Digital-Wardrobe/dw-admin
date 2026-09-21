@@ -1,16 +1,82 @@
+/* Geist has more character than system-ui and ships a true monospace companion,
+   which matters here because almost every value on screen is a number. */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  background-color: #080808;
-  color: #ffffff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow-x: hidden;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: theme('colors.ink.900');
+    color: theme('colors.ink.100');
+    font-family: theme('fontFamily.sans');
+    font-weight: 400;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Figures must not jitter as values update — every number in this app is
+     live data that re-renders on refresh. */
+  :where(table, .tabular, [data-numeric]) {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  /* A visible focus ring is an accessibility requirement, not decoration.
+     Scoped to keyboard users so it does not fire on mouse clicks. */
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.DEFAULT');
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  #root {
+    min-height: 100dvh;   /* dvh avoids the iOS Safari viewport jump */
+    width: 100%;
+  }
+
+  /* Headings tighten as they grow; labels open up. */
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
 }
 
-#root {
-  min-height: 100vh;
-  width: 100%;
+@layer utilities {
+  /* Very fine grain over the canvas so large dark areas do not read as flat
+     vector fill. Non-interactive and fixed so it never scrolls. */
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg,
+      theme('colors.ink.800') 25%,
+      theme('colors.ink.700') 37%,
+      theme('colors.ink.800') 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton { animation: none; }
+    html { scroll-behavior: auto; }
+  }
 }

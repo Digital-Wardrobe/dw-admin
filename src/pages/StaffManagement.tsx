@@ -39,20 +39,20 @@ export default function StaffManagement() {
   return (
     <div className="space-y-6 max-w-2xl animate-fadeIn text-white">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Staff Account Provisioning</h1>
-        <p className="text-sm text-[#666]">Onboard employee accounts, authorize administrative permission hierarchies, and seed initial system access parameters.</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-ink-50">Team</h1>
+        <p className="text-sm text-ink-400">Create an admin account and set what it can access.</p>
       </div>
 
       {/* Main Creation Card Form Component */}
-      <div className="rounded-2xl border border-[#1A1A1A] bg-[#0E0E10] p-6 shadow-xl">
+      <div className="rounded-2xl border border-[#1E293B] bg-[#0E0E10] p-6 shadow-xl">
         <form onSubmit={handleCreateStaff} className="space-y-4">
           
           <div>
-            <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-gray-500 mb-2">Display Profile Name</label>
+            <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-gray-500 mb-2">Full name</label>
             <input 
               type="text" required placeholder="e.g. Rachel (Operations Lead)" 
               value={profileName} onChange={(e)=>setProfileName(e.target.value)}
-              className="w-full rounded-xl border border-[#1A1A1A] bg-[#121214] py-3 px-4 text-xs font-medium text-white placeholder-gray-700 outline-none focus:border-cyan-500/30"
+              className="w-full rounded-xl border border-[#1E293B] bg-[#121214] py-3 px-4 text-xs font-medium text-white placeholder-gray-700 outline-none focus:border-brand/30"
             />
           </div>
 
@@ -62,7 +62,7 @@ export default function StaffManagement() {
               <input 
                 type="email" required placeholder="name@fluntr.com" 
                 value={email} onChange={(e)=>setEmail(e.target.value)}
-                className="w-full rounded-xl border border-[#1A1A1A] bg-[#121214] py-3 px-4 text-xs font-medium text-white placeholder-gray-700 outline-none focus:border-cyan-500/30"
+                className="w-full rounded-xl border border-[#1E293B] bg-[#121214] py-3 px-4 text-xs font-medium text-white placeholder-gray-700 outline-none focus:border-brand/30"
               />
             </div>
             <div>
@@ -70,7 +70,7 @@ export default function StaffManagement() {
               <input 
                 type="text" required placeholder="rachel_mod" 
                 value={username} onChange={(e)=>setUsername(e.target.value)}
-                className="w-full rounded-xl border border-[#1A1A1A] bg-[#121214] py-3 px-4 text-xs font-medium text-white placeholder-gray-700 outline-none focus:border-cyan-500/30"
+                className="w-full rounded-xl border border-[#1E293B] bg-[#121214] py-3 px-4 text-xs font-medium text-white placeholder-gray-700 outline-none focus:border-brand/30"
               />
             </div>
           </div>
@@ -81,14 +81,14 @@ export default function StaffManagement() {
               <input 
                 type="text" required placeholder="Min 6 secure characters..." 
                 value={initialPassword} onChange={(e)=>setInitialPassword(e.target.value)}
-                className="w-full rounded-xl border border-[#1A1A1A] bg-[#121214] py-3 px-4 text-xs font-mono text-white placeholder-gray-700 outline-none focus:border-cyan-500/30"
+                className="w-full rounded-xl border border-[#1E293B] bg-[#121214] py-3 px-4 text-xs font-mono text-white placeholder-gray-700 outline-none focus:border-brand/30"
               />
             </div>
             <div>
               <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-gray-500 mb-2">IAM Clearance Role Level</label>
               <select 
                 value={roleAssign} onChange={(e)=>setRoleAssign(e.target.value)}
-                className="w-full rounded-xl border border-[#1A1A1A] bg-[#121214] py-3 px-4 text-xs font-bold text-gray-400 outline-none focus:border-cyan-500/30 cursor-pointer"
+                className="w-full rounded-xl border border-[#1E293B] bg-[#121214] py-3 px-4 text-xs font-bold text-gray-400 outline-none focus:border-brand/30 cursor-pointer"
               >
                 <option value="ADMIN">Standard Admin (Moderator / Support)</option>
                 <option value="SUPERADMIN">Superadmin (Complete Workspace Core Access)</option>
@@ -97,14 +97,14 @@ export default function StaffManagement() {
           </div>
 
           {statusMessage && (
-            <div className="p-3.5 rounded-xl border border-[#1A1A1A] bg-[#151518] text-xs font-mono font-bold text-gray-300 animate-fadeIn">
+            <div className="p-3.5 rounded-xl border border-[#1E293B] bg-[#151518] text-xs font-mono font-bold text-gray-300 animate-fadeIn">
               {statusMessage}
             </div>
           )}
 
           <button
             type="submit" disabled={loading}
-            className="w-full rounded-xl bg-cyan-400 py-3.5 text-xs font-extrabold uppercase tracking-widest text-black transition-all hover:bg-cyan-300 disabled:opacity-50 active:scale-[0.99] cursor-pointer mt-2 flex items-center justify-center gap-2"
+            className="w-full rounded-xl bg-brand py-3.5 text-xs font-extrabold uppercase tracking-widest text-black transition-all hover:bg-brand-soft disabled:opacity-50 active:scale-[0.99] cursor-pointer mt-2 flex items-center justify-center gap-2"
           >
             <UserPlus size={14} />
             {loading ? 'Executing Server Record Provisioning...' : 'Provision Access Credentials ✦'}

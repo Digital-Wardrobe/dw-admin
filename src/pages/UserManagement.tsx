@@ -129,37 +129,37 @@ export default function UserManagement() {
   const CONFIRM_PHRASE = 'DELETE ASSET';
 
   return (
-    <div className="space-y-6 animate-fadeIn font-mono text-[#E2E8F0]">
+    <div className="space-y-6 animate-fadeIn font-mono text-ink-100">
       <div>
-        <h1 className="text-xl font-black text-white uppercase tracking-tight">User Directory Workspace</h1>
-        <p className="text-xs text-[#64748B] mt-0.5">Filter shoppers and inspect device telemetry variables straight from live system nodes.</p>
+        <h1 className="text-xl font-semibold text-white uppercase tracking-tight">User Directory Workspace</h1>
+        <p className="text-xs text-ink-400 mt-0.5">Search accounts and open one to see its devices and activity.</p>
       </div>
 
       {/* Search Form */}
       <form onSubmit={(e) => { e.preventDefault(); setPage(1); fetchUsers(); }} className="flex gap-3">
         <div className="relative flex-1">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-[#475569]"><Search size={14} /></span>
+          <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-ink-400"><Search size={14} /></span>
           <input
             type="text"
             placeholder="Filter registry by typing name, @username, or email handle..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-[#1E293B] bg-[#0F172A] py-3 pl-11 pr-4 text-xs font-semibold text-white outline-none focus:border-indigo-500/50 transition-colors placeholder:text-[#334155]"
+            className="w-full rounded-lg border border-[#1E293B] bg-[#0E1320] py-3 pl-11 pr-4 text-xs font-semibold text-white outline-none focus:border-brand/50 transition-colors placeholder:text-[#334155]"
           />
         </div>
-        <button type="submit" className="rounded-lg bg-indigo-600 px-5 text-xs font-bold text-white hover:bg-indigo-500 transition-all cursor-pointer">
-          Query Registry
+        <button type="submit" className="rounded-lg bg-brand px-5 text-xs font-bold text-white hover:bg-brand transition-all cursor-pointer">
+          Search
         </button>
       </form>
 
       {/* Table Component */}
-      <div className="rounded-xl bg-[#0F172A] border border-[#1E293B] overflow-hidden">
+      <div className="rounded-xl bg-[#0E1320] border border-[#1E293B] overflow-hidden">
         {loading ? (
-          <div className="text-center py-12 text-xs text-indigo-400">Running database registry query...</div>
+          <div className="text-center py-12 text-xs text-brand">Running database registry query...</div>
         ) : (
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-[#1E293B] bg-[#1E293B]/20 text-[#64748B] uppercase text-[10px] tracking-wider font-bold">
+              <tr className="border-b border-[#1E293B] bg-[#1E293B]/20 text-ink-400 uppercase text-[10px] tracking-wider font-bold">
                 <th className="py-3 pl-4">Account Profile Identifier</th>
                 <th className="py-3">Clearance Level</th>
                 <th className="py-3">Onboard Matrix</th>
@@ -176,11 +176,11 @@ export default function UserManagement() {
                   onClick={() => openInspectorDrawer(u.id)}
                 >
                   <td className="py-4 pl-4">
-                    <div className="font-bold text-white hover:text-indigo-400 transition-colors">{u.profileName}</div>
-                    <div className="text-[11px] text-[#475569] mt-0.5">@{u.username} • {u.email}</div>
+                    <div className="font-bold text-white hover:text-brand transition-colors">{u.profileName}</div>
+                    <div className="text-[11px] text-ink-400 mt-0.5">@{u.username} • {u.email}</div>
                   </td>
                   <td className="py-4">
-                    <span className="bg-[#1E293B] text-[#94A3B8] rounded px-1.5 py-0.5 text-[9px] font-bold uppercase">{u.role}</span>
+                    <span className="bg-[#1E293B] text-ink-300 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase">{u.role}</span>
                   </td>
                   <td className="py-4">
                     {u.isOnboarded
@@ -195,14 +195,14 @@ export default function UserManagement() {
                         <div className="font-bold text-violet-300 text-[11px]">
                           ~{u.storageAssets?.estimatedMB ?? '0.00'} MB
                         </div>
-                        <div className="text-[9px] text-[#475569]">
+                        <div className="text-[9px] text-ink-400">
                           {u.storageAssets?.fileCount ?? 0} files
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="py-4 text-right pr-4">
-                    <button className="text-[10px] font-bold text-indigo-400 bg-indigo-950/30 border border-indigo-900/40 rounded px-2.5 py-1 hover:bg-indigo-600 hover:text-white transition-all">
+                    <button className="text-[10px] font-bold text-brand bg-ink-850/30 border border-ink-700/40 rounded px-2.5 py-1 hover:bg-brand hover:text-white transition-all">
                       Audit Engine →
                     </button>
                   </td>
@@ -226,13 +226,13 @@ export default function UserManagement() {
           <button
             disabled={page === 1}
             onClick={() => setPage(p => Math.max(p - 1, 1))}
-            className="px-4 py-2 bg-[#0F172A] border border-[#1E293B] rounded-xl hover:bg-[#1E293B] disabled:opacity-30 cursor-pointer"
+            className="px-4 py-2 bg-[#0E1320] border border-[#1E293B] rounded-xl hover:bg-[#1E293B] disabled:opacity-30 cursor-pointer"
           >PREV</button>
           <span className="px-4 py-2 text-gray-500 flex items-center">{page} / {totalPages}</span>
           <button
             disabled={page === totalPages}
             onClick={() => setPage(p => Math.min(p + 1, totalPages))}
-            className="px-4 py-2 bg-[#0F172A] border border-[#1E293B] rounded-xl hover:bg-[#1E293B] disabled:opacity-30 cursor-pointer"
+            className="px-4 py-2 bg-[#0E1320] border border-[#1E293B] rounded-xl hover:bg-[#1E293B] disabled:opacity-30 cursor-pointer"
           >NEXT</button>
         </div>
       )}
@@ -240,25 +240,25 @@ export default function UserManagement() {
       {/* ── Sliding Side Drawer ─────────────────────────────────────────────── */}
       {drawerOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-end animate-fadeIn">
-          <div className="w-full max-w-[440px] bg-[#0F172A] border-l border-[#1E293B] h-full p-6 space-y-6 flex flex-col justify-between shadow-2xl relative text-white overflow-y-auto">
+          <div className="w-full max-w-[440px] bg-[#0E1320] border-l border-[#1E293B] h-full p-6 space-y-6 flex flex-col justify-between shadow-2xl relative text-white overflow-y-auto">
             <div>
               <button onClick={() => setDrawerOpen(false)} className="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors cursor-pointer border-none bg-transparent outline-none"><X size={16} /></button>
 
               {inspectorLoading ? (
-                <div className="text-center py-32 text-xs text-indigo-400 font-mono">Compiling direct index relational telemetry...</div>
+                <div className="text-center py-32 text-xs text-brand font-mono">Compiling direct index relational telemetry...</div>
               ) : (
                 <div className="space-y-6 mt-4">
                   <div className="border-b border-[#1E293B] pb-4">
-                    <h2 className="text-sm font-black text-white">{inspectorUser?.profileName}</h2>
-                    <p className="text-xs text-[#64748B]">@{inspectorUser?.username}</p>
+                    <h2 className="text-sm font-semibold text-white">{inspectorUser?.profileName}</h2>
+                    <p className="text-xs text-ink-400">@{inspectorUser?.username}</p>
                   </div>
 
                   {/* Network telemetry */}
                   <div className="space-y-2">
-                    <h3 className="text-[10px] uppercase font-bold text-[#475569] tracking-wider">Network Connection Footprint</h3>
+                    <h3 className="text-[10px] uppercase font-bold text-ink-400 tracking-wider">Network Connection Footprint</h3>
                     <div className="grid grid-cols-2 gap-3 text-xs font-semibold">
                       <div className="bg-[#1E293B]/40 border border-[#1E293B] p-3 rounded-lg flex items-center gap-2">
-                        <Wifi size={14} className="text-indigo-400" />
+                        <Wifi size={14} className="text-brand" />
                         <div>
                           <div className="text-[9px] text-gray-500 uppercase">Link Mode</div>
                           <div className="text-white font-bold mt-0.5">{inspectorUser?.telemetry?.network}</div>
@@ -284,16 +284,16 @@ export default function UserManagement() {
 
                   {/* Asset matrix */}
                   <div className="space-y-2">
-                    <h3 className="text-[10px] uppercase font-bold text-[#475569] tracking-wider">Asset Relational Matrix</h3>
+                    <h3 className="text-[10px] uppercase font-bold text-ink-400 tracking-wider">Asset Relational Matrix</h3>
                     <div className="grid grid-cols-2 gap-3 text-xs font-semibold">
                       <div className="bg-[#1E293B]/30 border border-[#1E293B] p-4 rounded-lg text-center">
-                        <Shirt className="mx-auto text-indigo-400 mb-1" size={14} />
-                        <div className="text-lg font-black text-white">{inspectorUser?.metrics?.clothesCount}</div>
+                        <Shirt className="mx-auto text-brand mb-1" size={14} />
+                        <div className="text-lg font-semibold text-white">{inspectorUser?.metrics?.clothesCount}</div>
                         <div className="text-[9px] text-gray-500 uppercase mt-0.5">Closet Clothes</div>
                       </div>
                       <div className="bg-[#1E293B]/30 border border-[#1E293B] p-4 rounded-lg text-center">
-                        <FolderHeart className="mx-auto text-pink-400 mb-1" size={14} />
-                        <div className="text-lg font-black text-white">{inspectorUser?.metrics?.collectionsCount}</div>
+                        <FolderHeart className="mx-auto text-brand-soft mb-1" size={14} />
+                        <div className="text-lg font-semibold text-white">{inspectorUser?.metrics?.collectionsCount}</div>
                         <div className="text-[9px] text-gray-500 uppercase mt-0.5">Collections</div>
                       </div>
                     </div>
@@ -301,8 +301,8 @@ export default function UserManagement() {
 
                   {/* ── AWS S3 Asset Deletion Control ────────────────────────────────── */}
                   <div className="space-y-2 pt-4 border-t border-[#1E293B]">
-                    <h3 className="text-[10px] uppercase font-bold text-[#475569] tracking-wider">AWS S3 Garbage Collection</h3>
-                    <p className="text-[10px] text-[#475569] leading-relaxed">
+                    <h3 className="text-[10px] uppercase font-bold text-ink-400 tracking-wider">AWS S3 Garbage Collection</h3>
+                    <p className="text-[10px] text-ink-400 leading-relaxed">
                       Enter a ClosetItem ID to permanently remove its media assets from the S3 bucket and purge the database record. This action is irreversible.
                     </p>
                     <div className="flex gap-2 mt-2">
@@ -343,7 +343,7 @@ export default function UserManagement() {
 
                   {/* DB Control Matrix */}
                   <div className="space-y-2 pt-4 border-t border-[#1E293B]">
-                    <h3 className="text-[10px] uppercase font-bold text-[#475569] tracking-wider">Database Direct Control Matrix</h3>
+                    <h3 className="text-[10px] uppercase font-bold text-ink-400 tracking-wider">Database Direct Control Matrix</h3>
                     <button
                       onClick={() => handleDatabaseMutation(inspectorUser.id, { isOnboarded: !inspectorUser.isOnboarded })}
                       className={`w-full font-bold py-2.5 px-3 rounded-lg font-mono transition-all text-center cursor-pointer border text-xs ${
@@ -360,7 +360,7 @@ export default function UserManagement() {
                   {inspectorUser && (
                     <button
                       onClick={() => { setSelectedUser(inspectorUser); setModalOpen(true); }}
-                      className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-950/30 text-indigo-400 border border-indigo-900/40 px-4 py-3 text-xs font-bold hover:bg-indigo-600 hover:text-white transition-all cursor-pointer"
+                      className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-ink-850/30 text-brand border border-ink-700/40 px-4 py-3 text-xs font-bold hover:bg-brand hover:text-white transition-all cursor-pointer"
                     >
                       <KeyRound size={14} /> Override Access Key
                     </button>
@@ -368,7 +368,7 @@ export default function UserManagement() {
                 </div>
               )}
             </div>
-            <div className="text-[9px] text-[#475569] text-center uppercase tracking-wider">Fluntr HQ Secure Internal Node.</div>
+            <div className="text-[9px] text-ink-400 text-center uppercase tracking-wider">Fluntr HQ Secure Internal Node.</div>
           </div>
         </div>
       )}
@@ -376,25 +376,25 @@ export default function UserManagement() {
       {/* ── S3 Deletion Confirmation Modal ─────────────────────────────────── */}
       {deleteModalOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-fadeIn">
-          <div className="w-full max-w-[420px] bg-[#0F172A] border border-red-900/50 rounded-3xl p-6 shadow-2xl text-white space-y-4">
+          <div className="w-full max-w-[420px] bg-[#0E1320] border border-red-900/50 rounded-3xl p-6 shadow-2xl text-white space-y-4">
             {/* Warning header */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-red-950/60 border border-red-900/50 flex items-center justify-center shrink-0">
                 <AlertTriangle size={18} className="text-red-400" />
               </div>
               <div>
-                <h2 className="text-sm font-black uppercase tracking-wider text-red-400">Permanent Asset Destruction</h2>
-                <p className="text-[10px] text-[#64748B] mt-0.5">This action is irreversible and cannot be undone.</p>
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-red-400">Permanent Asset Destruction</h2>
+                <p className="text-[10px] text-ink-400 mt-0.5">This action is irreversible and cannot be undone.</p>
               </div>
             </div>
 
             <div className="bg-red-950/20 border border-red-900/40 rounded-xl p-4 text-[11px] text-red-300 leading-relaxed font-mono space-y-1">
               <p>⚠️ <strong>Warning:</strong> This permanently deletes the file from <strong>AWS S3</strong> and wipes its database record.</p>
-              <p className="text-[#64748B] mt-1">Asset ID: <span className="text-red-400">{deleteAssetId}</span></p>
+              <p className="text-ink-400 mt-1">Asset ID: <span className="text-red-400">{deleteAssetId}</span></p>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] text-[#64748B] uppercase font-bold tracking-wider">
+              <label className="text-[10px] text-ink-400 uppercase font-bold tracking-wider">
                 Type <span className="text-red-400 font-mono">{CONFIRM_PHRASE}</span> to confirm
               </label>
               <input
@@ -434,19 +434,19 @@ export default function UserManagement() {
       {/* ── Password Reset Modal ────────────────────────────────────────────── */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="w-full max-w-[400px] bg-[#0F172A] border border-[#1E293B] rounded-3xl p-6 shadow-2xl text-white">
-            <h2 className="text-sm font-black uppercase tracking-wider text-gray-200 mb-2">Manual Password Override</h2>
+          <div className="w-full max-w-[400px] bg-[#0E1320] border border-[#1E293B] rounded-3xl p-6 shadow-2xl text-white">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-200 mb-2">Manual Password Override</h2>
             <p className="text-xs text-[#555] font-mono mb-4">Injecting fresh access tokens for: @{selectedUser?.username}</p>
             <input
               type="text"
               placeholder="Type secure replacement password..."
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full rounded-xl border border-[#1E293B] bg-[#0F172A] py-3 px-4 text-xs font-mono text-white outline-none mb-4 focus:border-indigo-500/50 transition-colors"
+              className="w-full rounded-xl border border-[#1E293B] bg-[#0E1320] py-3 px-4 text-xs font-mono text-white outline-none mb-4 focus:border-brand/50 transition-colors"
             />
             <div className="flex gap-3 justify-end text-xs font-bold">
               <button onClick={() => setModalOpen(false)} className="px-4 py-2 text-gray-400 hover:text-white cursor-pointer border-none bg-transparent">Abort</button>
-              <button onClick={executePasswordReset} className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500 cursor-pointer border-none">Commit Override ✦</button>
+              <button onClick={executePasswordReset} className="px-4 py-2 bg-brand text-white rounded-xl hover:bg-brand cursor-pointer border-none">Commit Override ✦</button>
             </div>
           </div>
         </div>
