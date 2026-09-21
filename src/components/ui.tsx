@@ -174,4 +174,4 @@ export function StatusPill({ ok, label }: { ok: boolean; label: string }) {
 
 /** Number formatting used across the console so 1000 never renders as "1000". */
 export const fmt = (n: number | null | undefined) =>
-  typeof n === 'number' && Number.isFinite(n) ? n.toLocaleString('en-US') : '—';
+  typeof n === 'number' && Number.isFinite(n) ? n.toLocaleString('en-US') : '\u2013';

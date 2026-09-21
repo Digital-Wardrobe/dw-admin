@@ -119,7 +119,7 @@ export default function UserManagement() {
       setDeleteResult({ success: true, message: res.data.message ?? 'Asset permanently deleted.' });
       setDeleteAssetId(null);
     } catch (err: any) {
-      const msg = err?.response?.data?.message ?? 'Deletion failed — check server logs.';
+      const msg = err?.response?.data?.message ?? 'Deletion failed. Check the server logs.';
       setDeleteResult({ success: false, message: msg });
     } finally {
       setDeleteRunning(false);

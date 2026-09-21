@@ -109,7 +109,7 @@ function PreviewBanner() {
     <div className="fixed bottom-4 left-1/2 z-50 -translate-x-1/2">
       <div className="flex items-center gap-3 rounded-full border border-brand-line bg-ink-850/95 px-4 py-2 text-xs text-ink-300 shadow-lift backdrop-blur">
         <span className="h-1.5 w-1.5 rounded-full bg-brand" aria-hidden="true" />
-        Design preview — sample data, no backend connected
+        Design preview. Sample data, no backend connected.
         <button onClick={() => setOpen(false)} className="ml-1 rounded px-1.5 py-0.5 text-ink-400 transition hover:text-ink-100">
           Hide
         </button>

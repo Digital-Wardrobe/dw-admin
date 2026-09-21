@@ -4,15 +4,11 @@ import {
 import { Users, Activity, Smartphone } from 'lucide-react';
 
 import { useAdminApi } from '../lib/useAdminApi';
+import { SERIES } from '../chartColors';
 import {
   PageHeader, Card, CardHeader, StatTile, StatTileSkeleton,
   ChartSkeleton, InlineError, EmptyState, StatusPill, fmt,
 } from '../components/ui';
-
-/* One accent plus a neutral ramp. The old chart used neon cyan, magenta and a
-   stray violet, which implied three unrelated categories were each important.
-   A single hue with stepped lightness reads as "parts of one whole". */
-const SERIES = ['#C9A84C', '#8A7231', '#5E5A4A', '#3B4252'];
 
 const NETWORK_LABELS: Record<string, string> = {
   WIFI: 'Wi-Fi',
@@ -92,7 +88,7 @@ export default function DashboardSummary() {
                 />
                 <StatTile
                   label="Events per account"
-                  value={totalUsers > 0 ? (totalLogs / totalUsers).toFixed(1) : '—'}
+                  value={totalUsers > 0 ? (totalLogs / totalUsers).toFixed(1) : '\u00b7'}
                   hint="Average across all registered accounts."
                 />
               </>
@@ -184,7 +180,7 @@ export default function DashboardSummary() {
                   <CardHeader title="Reading these numbers" />
                   <dl className="divide-y divide-ink-700">
                     {[
-                      ['Registered accounts', 'Total rows in the user table. Not the same as active users — it includes accounts that never completed onboarding.'],
+                      ['Registered accounts', 'Total rows in the user table. Not the same as active users: it includes accounts that never completed onboarding.'],
                       ['Activity events', 'One row per logged action. Volume scales with usage, so compare it against account growth rather than on its own.'],
                       ['Connection type', 'Reported by the mobile client. "Not reported" covers sessions from builds that predate connection tracking.'],
                     ].map(([term, desc]) => (

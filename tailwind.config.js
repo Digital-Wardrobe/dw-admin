@@ -10,25 +10,28 @@ export default {
         // One gray family (cool / slate). Previously the shell used slate while
         // pages used neutral #1A1A1A, so two different blacks sat side by side.
         ink: {
-          950: '#080B12',  // page background
-          900: '#0B0F19',  // app canvas
-          850: '#0E1320',  // raised surface
-          800: '#131A2A',  // card
-          700: '#1E293B',  // border
-          600: '#334155',  // strong border
-          400: '#64748B',  // dim text
-          300: '#94A3B8',  // muted text
-          100: '#E2E8F0',  // body text
-          50:  '#F8FAFC',  // headings
+          950: '#FFFFFF',  // contrast against the accent (button label)
+          900: '#F6F7F8',  // app canvas
+          850: '#FFFFFF',  // sidebar / raised surface
+          800: '#FFFFFF',  // card
+          700: '#E6E7EA',  // hairline border
+          600: '#D2D4D9',  // strong border
+          400: '#767A85',  // dim text
+          300: '#565A63',  // muted text
+          100: '#26282E',  // body text
+          50:  '#15171B',  // headings
         },
         // Single accent, taken from the Fluntr marketing site so the admin reads
         // as the same product. Replaces the indigo/cyan/magenta/violet mix.
+        // Single accent, under 80% saturation, deliberately not a hue that
+        // already carries meaning here: red is error and green is healthy, so
+        // the accent stays out of the semantic set.
         brand: {
-          DEFAULT: '#C9A84C',
-          soft:    '#E3C877',
-          dim:     '#8A7231',
-          wash:    'rgba(201,168,76,0.10)',
-          line:    'rgba(201,168,76,0.28)',
+          DEFAULT: '#0E6E6E',
+          soft: '#12898A',
+          dim: '#0A5252',
+          wash: 'rgba(14,110,110,0.08)',
+          line: 'rgba(14,110,110,0.26)',
         },
         // Semantic colours are for state only, never decoration.
         ok:   '#4ADE80',
@@ -51,8 +54,8 @@ export default {
       },
       boxShadow: {
         // Tinted to the canvas hue rather than pure black at low opacity.
-        'card': '0 1px 2px rgba(5,8,14,0.6), 0 8px 24px -12px rgba(5,8,14,0.8)',
-        'lift': '0 2px 4px rgba(5,8,14,0.6), 0 16px 40px -16px rgba(5,8,14,0.9)',
+        'card': '0 1px 2px rgba(21,23,27,0.04), 0 1px 3px rgba(21,23,27,0.06)',
+        'lift': '0 2px 6px rgba(21,23,27,0.06), 0 12px 32px -12px rgba(21,23,27,0.18)',
       },
       transitionDuration: { DEFAULT: '200ms' },
     },
