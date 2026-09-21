@@ -10,7 +10,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   const userJson = localStorage.getItem('admin_user');
   
   if (!token || !userJson) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/portal/secure-gateway-entry" replace />;
   }
 
   try {
@@ -22,6 +22,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     console.error("AuthGuard user verification error:", err);
   }
 
-  // If not matching administration roles, bounce back to public site / home
-  return <Navigate to="/" replace />;
+  // Signed in but without an admin role: send to the login screen, which
+  // explains that the account lacks access.
+  return <Navigate to="/portal/secure-gateway-entry" replace />;
 }

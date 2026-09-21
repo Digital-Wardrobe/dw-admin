@@ -127,10 +127,11 @@ export default function App() {
         <Route path="/admin/users"     element={guarded(<UserManagement />)} />
         <Route path="/admin/infra"     element={guarded(<InfrastructureMetrics />)} />
         <Route path="/admin/staff"     element={guarded(<StaffManagement />)} />
-        {/* Unknown paths used to render the login form in place, which made a
-            typo look like a logout. Redirect instead. */}
-        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+        {/* Both of these must point at the login route, not at a guarded page:
+            AuthGuard redirects unauthenticated visitors here, so sending them
+            onward to a guarded route creates an infinite redirect loop. */}
+        <Route path="/" element={<Navigate to="/portal/secure-gateway-entry" replace />} />
+        <Route path="*" element={<Navigate to="/portal/secure-gateway-entry" replace />} />
       </Routes>
     </BrowserRouter>
   );
