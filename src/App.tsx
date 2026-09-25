@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
-import { LayoutDashboard, BarChart3, Users, HardDrive, UserPlus, LogOut } from 'lucide-react';
+import { LayoutDashboard, BarChart3, Users, HardDrive, UserPlus, LogOut, ShieldAlert } from 'lucide-react';
 
 import DashboardSummary from './pages/DashboardSummary';
 import BusinessMetrics from './pages/BusinessMetrics';
 import UserManagement from './pages/UserManagement';
 import InfrastructureMetrics from './pages/InfrastructureMetrics';
 import StaffManagement from './pages/StaffManagement';
+import ModerationGate from './pages/ModerationGate';
 import LoginPortal from './pages/LoginPortal';
 import AuthGuard from './components/AuthGuard';
 
@@ -23,6 +24,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
     { path: '/admin/dashboard', name: 'Overview Console', icon: <LayoutDashboard size={16} /> },
     { path: '/admin/business', name: 'Growth Analytics', icon: <BarChart3 size={16} /> },
     { path: '/admin/users', name: 'User Directory', icon: <Users size={16} /> },
+    { path: '/admin/moderation', name: 'Reports', icon: <ShieldAlert size={16} /> },
     { path: '/admin/infra', name: 'Cloud Resources', icon: <HardDrive size={16} /> },
     { path: '/admin/staff', name: 'Staff Provisioning', icon: <UserPlus size={16} /> },
   ];
@@ -95,6 +97,7 @@ export default function App() {
         <Route path="/admin/dashboard" element={<AuthGuard><AdminLayout><DashboardSummary /></AdminLayout></AuthGuard>} />
         <Route path="/admin/business" element={<AuthGuard><AdminLayout><BusinessMetrics /></AdminLayout></AuthGuard>} />
         <Route path="/admin/users" element={<AuthGuard><AdminLayout><UserManagement /></AdminLayout></AuthGuard>} />
+        <Route path="/admin/moderation" element={<AuthGuard><AdminLayout><ModerationGate /></AdminLayout></AuthGuard>} />
         <Route path="/admin/infra" element={<AuthGuard><AdminLayout><InfrastructureMetrics /></AdminLayout></AuthGuard>} />
         <Route path="/admin/staff" element={<AuthGuard><AdminLayout><StaffManagement /></AdminLayout></AuthGuard>} />
         <Route path="*" element={<LoginPortal />} />
