@@ -89,7 +89,7 @@ export default function ModerationGate() {
         ))}
       </div>
 
-      {error && <p className="text-sm text-bad">{error}</p>}
+      {error && <p className="text-sm text-red-700">{error}</p>}
 
       {!loading && !error && reports.length === 0 ? (
         <div className="rounded-card bg-ink-800 p-8 border border-ink-700 flex flex-col items-center justify-center min-h-[240px] text-center">
@@ -97,56 +97,54 @@ export default function ModerationGate() {
           <h3 className="text-base font-semibold text-ink-100">No {status.toLowerCase()} reports</h3>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-card border border-ink-700 bg-ink-800">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-ink-850 text-label uppercase text-ink-400">
-              <tr>
-                <th className="px-4 py-3">When</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Reason</th>
-                <th className="px-4 py-3">Reported user</th>
-                <th className="px-4 py-3">Reporter</th>
-                <th className="px-4 py-3">Content ID</th>
-                {status === 'OPEN' && <th className="px-4 py-3 text-right">Actions</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {reports.map(r => (
-                <tr key={r.id} className="border-t border-ink-700 align-top">
-                  <td className="px-4 py-3 text-ink-300 whitespace-nowrap">{new Date(r.createdAt).toLocaleString()}</td>
-                  <td className="px-4 py-3">{r.contentType ?? '—'}</td>
-                  <td className="px-4 py-3">
-                    <div className="font-semibold text-bad">{REASON_LABEL[r.reason] ?? r.reason}</div>
-                    {r.details && <div className="mt-1 max-w-xs text-xs text-ink-300">{r.details}</div>}
-                  </td>
-                  <td className="px-4 py-3">{r.reportedUser ? `@${r.reportedUser.username}` : '—'}</td>
-                  <td className="px-4 py-3 text-ink-300">{r.reporter ? `@${r.reporter.username}` : '—'}</td>
-                  <td className="px-4 py-3 font-mono text-[11px] text-ink-400">{r.contentId}</td>
-                  {status === 'OPEN' && (
-                    <td className="px-4 py-3">
-                      <div className="flex justify-end gap-2">
-                        {r.contentType !== 'USER' && (
-                          <button disabled={busyId === r.id} onClick={() => act(r, 'RESOLVED', true)}
-                            className="flex items-center gap-1 rounded-lg bg-red-500/15 px-2.5 py-1.5 text-xs text-bad hover:bg-red-500/25 disabled:opacity-40">
-                            <Trash2 size={12} /> Remove
-                          </button>
-                        )}
-                        <button disabled={busyId === r.id} onClick={() => act(r, 'RESOLVED')}
-                          className="flex items-center gap-1 rounded-lg bg-green-500/15 px-2.5 py-1.5 text-xs text-ok hover:bg-green-500/25 disabled:opacity-40">
-                          <Check size={12} /> Resolved
-                        </button>
-                        <button disabled={busyId === r.id} onClick={() => act(r, 'DISMISSED')}
-                          className="flex items-center gap-1 rounded-lg bg-ink-700 px-2.5 py-1.5 text-xs text-ink-200 hover:bg-ink-600 disabled:opacity-40">
-                          <X size={12} /> Dismiss
-                        </button>
-                      </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ul className="space-y-3">
+          {reports.map(r => (
+            <li key={r.id} className="rounded-card border border-ink-700 bg-ink-800 p-4 shadow-card">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+                <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-[1.1fr_1.4fr_1.2fr]">
+                  <div className="min-w-0">
+                    <div className="text-label uppercase text-ink-400">Content</div>
+                    <div className="mt-1 text-sm font-medium text-ink-100">{r.contentType ?? 'Unknown'}</div>
+                    <div className="truncate font-mono text-xs text-ink-400" title={r.contentId ?? ''}>{r.contentId ?? 'no id'}</div>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-label uppercase text-ink-400">Reason</div>
+                    <div className="mt-1 text-sm font-semibold text-red-700">{REASON_LABEL[r.reason] ?? r.reason}</div>
+                    {r.details && <div className="mt-1 text-xs leading-relaxed text-ink-300">{r.details}</div>}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-label uppercase text-ink-400">People</div>
+                    <div className="mt-1 truncate text-sm text-ink-100">
+                      {r.reportedUser ? `@${r.reportedUser.username}` : 'No user'}
+                    </div>
+                    <div className="truncate text-xs text-ink-400">
+                      reported by {r.reporter ? `@${r.reporter.username}` : 'unknown'}
+                    </div>
+                    <div className="text-xs text-ink-400">{new Date(r.createdAt).toLocaleString()}</div>
+                  </div>
+                </div>
+                {status === 'OPEN' && (
+                  <div className="flex flex-wrap gap-2 lg:w-[370px] lg:shrink-0 lg:flex-nowrap lg:justify-end">
+                    {r.contentType !== 'USER' && (
+                      <button disabled={busyId === r.id} onClick={() => act(r, 'RESOLVED', true)}
+                        className="flex items-center gap-1 whitespace-nowrap rounded-inner border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-40">
+                        <Trash2 size={12} /> Remove content
+                      </button>
+                    )}
+                    <button disabled={busyId === r.id} onClick={() => act(r, 'RESOLVED')}
+                      className="flex items-center gap-1 whitespace-nowrap rounded-inner border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-800 hover:bg-green-100 disabled:opacity-40">
+                      <Check size={12} /> Resolved
+                    </button>
+                    <button disabled={busyId === r.id} onClick={() => act(r, 'DISMISSED')}
+                      className="flex items-center gap-1 whitespace-nowrap rounded-inner border border-ink-700 bg-ink-800 px-3 py-1.5 text-xs font-medium text-ink-200 hover:bg-ink-700 disabled:opacity-40">
+                      <X size={12} /> Dismiss
+                    </button>
+                  </div>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
       <p className="text-xs text-ink-400">For reported accounts, suspend the user from User Directory, then mark the report resolved.</p>
     </div>
