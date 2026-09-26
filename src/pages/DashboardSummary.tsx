@@ -1,196 +1,201 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-import { Users, Wifi, Globe, LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import {
+  ResponsiveContainer, PieChart, Pie, Cell, Tooltip,
+} from 'recharts';
+import { Users, Activity, Smartphone } from 'lucide-react';
+
+import { useAdminApi } from '../lib/useAdminApi';
+import { SERIES } from '../chartColors';
+import {
+  PageHeader, Card, CardHeader, StatTile, StatTileSkeleton,
+  ChartSkeleton, InlineError, EmptyState, StatusPill, fmt,
+} from '../components/ui';
+
+const NETWORK_LABELS: Record<string, string> = {
+  WIFI: 'Wi-Fi',
+  CELLULAR: 'Cellular',
+  UNKNOWN: 'Not reported',
+};
+
+function ChartTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+  const p = payload[0];
+  return (
+    <div className="rounded-inner border border-ink-600 bg-ink-850 px-3 py-2 shadow-lift">
+      <p className="text-xs font-medium text-ink-100">{p.name}</p>
+      <p data-numeric className="text-xs text-ink-300">
+        {fmt(p.value)} {p.value === 1 ? 'session' : 'sessions'}
+      </p>
+    </div>
+  );
+}
 
 export default function DashboardSummary() {
-  const [metrics, setMetrics] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const { data, loading, error, reload } = useAdminApi<any>('dashboard-summary');
 
-  useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        const token = localStorage.getItem('admin_session_token');
-        if (!token) {
-          setError("No session token found");
-          setLoading(false);
-          return;
-        }
+  const summary = data?.summary;
+  const totalUsers = summary?.totalUsers ?? 0;
+  const totalLogs = summary?.totalActivityLogs ?? 0;
 
-        const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.fluntr.com/api/admin/';
-        const url = `${API_URL}dashboard-summary`;
+  const network = (data?.networkDistribution ?? [])
+    .map((row: any) => ({
+      name: NETWORK_LABELS[row.networkType] ?? row.networkType ?? 'Not reported',
+      value: row?._count?._all ?? 0,
+    }))
+    .filter((row: any) => row.value > 0)
+    .sort((a: any, b: any) => b.value - a.value);
 
-        const res = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.data.success) {
-          setMetrics(res.data.data);
-        } else {
-          setError("Failed to fetch live cloud telemetry");
-        }
-      } catch (err: any) {
-        console.error("Dashboard metric parsing error:", err);
-        setError(err.response?.data?.message || err.message || "Failed to load telemetry");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMetrics();
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('admin_session_token');
-    localStorage.removeItem('admin_user');
-    navigate('/');
-  };
-
-  if (loading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#080808] text-white">
-        <div className="flex flex-col items-center gap-4">
-          <span className="h-8 w-8 animate-spin rounded-full border-4 border-cyan-400 border-t-transparent"></span>
-          <span className="text-sm font-semibold tracking-wide text-gray-400">Loading Live Cloud Telemetry...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-[#080808] p-4 text-white">
-        <h2 className="mb-4 text-xl font-bold text-red-500">Telemetry Synchronization Failed</h2>
-        <p className="mb-6 text-sm text-[#666]">{error}</p>
-        <button onClick={handleLogout} className="rounded-full bg-[#111] px-6 py-2 text-xs font-semibold text-white border border-[#222] hover:bg-[#222] transition-all">
-          Return to Portal Gateway
-        </button>
-      </div>
-    );
-  }
-
-  // Map backend data to visual chart arrays
-  const networkData = metrics?.networkDistribution?.map((item: any) => ({
-    name: item.networkType,
-    value: item._count._all
-  })) || [];
-
-  const COLORS = ['#00E5FF', '#FF007F', '#8884d8'];
+  const networkTotal = network.reduce((sum: number, r: any) => sum + r.value, 0);
 
   return (
-    <div className="min-h-screen w-full bg-[#080808] p-8 text-white font-sans">
-      {/* Header Row */}
-      <div className="mb-8 flex items-center justify-between border-b border-[#1A1A1A] pb-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Fluntr Engine Analytics</h1>
-          <p className="text-sm text-[#666]">Real-time hardware connectivity and user telemetry logs</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 rounded-full bg-[#111] px-4 py-2 text-xs font-semibold text-green-400 border border-[#222]">
-            <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" /> AWS Core Online
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 rounded-full bg-red-950/40 border border-red-900/50 hover:bg-red-900/40 px-4 py-2 text-xs font-semibold text-red-400 transition-all cursor-pointer"
-          >
-            <LogOut size={14} /> Log Out
-          </button>
-        </div>
-      </div>
+    <>
+      <PageHeader
+        title="Overview"
+        subtitle="Accounts, recorded activity and how people are connecting. Figures come straight from the production database."
+        actions={<StatusPill ok={!error} label={error ? 'API unreachable' : 'API connected'} />}
+      />
 
-      {/* Top Metrics Cards Grid */}
-      <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-2xl bg-[#111] p-6 border border-[#1A1A1A] hover:border-cyan-500/20 transition-all duration-300">
-          <div className="flex items-center justify-between text-[#666] mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Total Registered Accounts</span>
-            <Users size={18} className="text-white" />
-          </div>
-          <h2 className="text-3xl font-extrabold">{metrics?.summary?.totalUsers || 0}</h2>
-        </div>
-
-        <div className="rounded-2xl bg-[#111] p-6 border border-[#1A1A1A] hover:border-pink-500/20 transition-all duration-300">
-          <div className="flex items-center justify-between text-[#666] mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Total Activity Logs Recorded</span>
-            <Wifi size={18} className="text-white" />
-          </div>
-          <h2 className="text-3xl font-extrabold">{metrics?.summary?.totalActivityLogs || 0}</h2>
-        </div>
-
-        <div className="rounded-2xl bg-[#111] p-6 border border-[#1A1A1A] hover:border-cyan-500/20 transition-all duration-300">
-          <div className="flex items-center justify-between text-[#666] mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Cloudflare Proxy Vectors</span>
-            <Globe size={18} className="text-white" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-[#00E5FF]">Active Edge</h2>
-        </div>
-      </div>
-
-      {/* Charts Visualization Row */}
-      <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-        {/* Network Type Breakdown (Pie/Donut Layout) */}
-        <div className="rounded-2xl bg-[#111] p-6 border border-[#1A1A1A] lg:col-span-1 flex flex-col justify-between hover:border-purple-500/10 transition-all duration-300">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#666] mb-4">Device Connectivity Ratio</h3>
-          <div className="h-64 w-full flex items-center justify-center">
-            {networkData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={networkData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" nameKey="name">
-                    {networkData.map((_: any, idx: number) => (
-                      <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#111', borderColor: '#222', color: '#fff' }} />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
-                </PieChart>
-              </ResponsiveContainer>
+      {error ? (
+        <InlineError message={error} onRetry={reload} />
+      ) : (
+        <>
+          {/* Four tiles rather than three: a row of three equal cards is the
+              most recognisable generic dashboard layout there is. */}
+          <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {loading ? (
+              <>
+                <StatTileSkeleton /><StatTileSkeleton />
+                <StatTileSkeleton /><StatTileSkeleton />
+              </>
             ) : (
-              <div className="text-xs text-[#555]">No telemetry records recorded yet</div>
+              <>
+                <StatTile
+                  label="Registered accounts"
+                  value={fmt(totalUsers)}
+                  icon={<Users size={16} strokeWidth={1.75} />}
+                  hint="Every account created, including inactive ones."
+                />
+                <StatTile
+                  label="Activity events"
+                  value={fmt(totalLogs)}
+                  icon={<Activity size={16} strokeWidth={1.75} />}
+                  hint="Actions written to the audit log."
+                />
+                <StatTile
+                  label="Sessions with network data"
+                  value={fmt(networkTotal)}
+                  icon={<Smartphone size={16} strokeWidth={1.75} />}
+                  hint="Sessions that reported a connection type."
+                />
+                <StatTile
+                  label="Events per account"
+                  value={totalUsers > 0 ? (totalLogs / totalUsers).toFixed(1) : '\u00b7'}
+                  hint="Average across all registered accounts."
+                />
+              </>
             )}
           </div>
-        </div>
 
-        {/* Global User Data Grid List View */}
-        <div className="rounded-2xl bg-[#111] p-6 border border-[#1A1A1A] lg:col-span-2 hover:border-[#222] transition-all duration-300">
-          <h3 className="text-sm font-bold uppercase tracking-wider text-[#666] mb-4">Account Diagnostic Directory</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-[#222] text-[#444] uppercase text-[10px] tracking-wider font-extrabold">
-                  <th className="pb-3">User Profiling</th>
-                  <th className="pb-3">Role Matrix</th>
-                  <th className="pb-3">Cloudflare Geolocation Registration</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#1A1A1A]">
-                {metrics?.userList?.map((user: any) => (
-                  <tr key={user.id} className="hover:bg-[#151515] transition-colors">
-                    <td className="py-3">
-                      <div className="font-semibold text-white">{user.profileName}</div>
-                      <div className="text-xs text-[#555]">@{user.username} • {user.email}</div>
-                    </td>
-                    <td className="py-3">
-                      <span className={`rounded-md px-2 py-1 text-[10px] font-black tracking-wide uppercase ${user.role === 'USER' ? 'bg-[#222] text-[#888]' : 'bg-cyan-950 text-[#00E5FF] border border-cyan-800/40'}`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="py-3 text-xs text-[#888]">
-                      {user.signupCity && user.signupCountry ? `${user.signupCity}, ${user.signupCountry}` : 'Awaiting Metadata Sync'}
-                    </td>
-                  </tr>
-                ))}
-                {(!metrics?.userList || metrics.userList.length === 0) && (
-                  <tr>
-                    <td colSpan={3} className="py-8 text-center text-xs text-[#444] uppercase tracking-wider">
-                      Zero registration entries found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          {/* Asymmetric split — the chart earns more room than the notes beside
+              it, so a 50/50 grid would waste half the row. */}
+          <div className="grid gap-4 lg:grid-cols-5">
+            <div className="lg:col-span-3">
+              {loading ? (
+                <ChartSkeleton />
+              ) : (
+                <Card>
+                  <CardHeader
+                    title="How people connect"
+                    hint={networkTotal > 0 ? `${fmt(networkTotal)} sessions` : undefined}
+                  />
+                  <div className="p-5">
+                    {network.length === 0 ? (
+                      <EmptyState
+                        title="No connection data yet"
+                        body="Network type is recorded when the mobile app reports a session. It will appear here once the app is in use."
+                        icon={<Smartphone size={26} />}
+                      />
+                    ) : (
+                      <div className="grid items-center gap-6 sm:grid-cols-2">
+                        <ResponsiveContainer width="100%" height={240}>
+                          <PieChart>
+                            <Pie
+                              data={network}
+                              dataKey="value"
+                              nameKey="name"
+                              innerRadius={62}
+                              outerRadius={96}
+                              paddingAngle={2}
+                              stroke="none"
+                            >
+                              {network.map((_: any, i: number) => (
+                                <Cell key={i} fill={SERIES[i % SERIES.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip content={<ChartTooltip />} />
+                          </PieChart>
+                        </ResponsiveContainer>
+
+                        {/* A readable legend with values beats recharts' default
+                            swatch row, which drops the numbers entirely. */}
+                        <ul className="space-y-3">
+                          {network.map((row: any, i: number) => {
+                            const pct = networkTotal ? (row.value / networkTotal) * 100 : 0;
+                            return (
+                              <li key={row.name}>
+                                <div className="mb-1.5 flex items-baseline justify-between gap-3">
+                                  <span className="flex items-center gap-2 text-sm text-ink-100">
+                                    <span
+                                      aria-hidden="true"
+                                      className="h-2.5 w-2.5 rounded-[3px]"
+                                      style={{ background: SERIES[i % SERIES.length] }}
+                                    />
+                                    {row.name}
+                                  </span>
+                                  <span data-numeric className="text-sm text-ink-300">
+                                    {pct.toFixed(1)}%
+                                  </span>
+                                </div>
+                                <div className="h-1 w-full overflow-hidden rounded-full bg-ink-700">
+                                  <div
+                                    className="h-full rounded-full"
+                                    style={{ width: `${pct}%`, background: SERIES[i % SERIES.length] }}
+                                  />
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              )}
+            </div>
+
+            <div className="lg:col-span-2">
+              {loading ? (
+                <ChartSkeleton height={200} />
+              ) : (
+                <Card className="h-full">
+                  <CardHeader title="Reading these numbers" />
+                  <dl className="divide-y divide-ink-700">
+                    {[
+                      ['Registered accounts', 'Total rows in the user table. Not the same as active users: it includes accounts that never completed onboarding.'],
+                      ['Activity events', 'One row per logged action. Volume scales with usage, so compare it against account growth rather than on its own.'],
+                      ['Connection type', 'Reported by the mobile client. "Not reported" covers sessions from builds that predate connection tracking.'],
+                    ].map(([term, desc]) => (
+                      <div key={term} className="px-5 py-4">
+                        <dt className="text-sm font-medium text-ink-100">{term}</dt>
+                        <dd className="mt-1 max-w-[65ch] text-sm leading-relaxed text-ink-400">{desc}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </Card>
+              )}
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </>
+      )}
+    </>
   );
 }

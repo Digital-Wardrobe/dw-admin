@@ -67,12 +67,12 @@ export default function ModerationGate() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between border-b border-[#1A1A1A] pb-4">
+      <div className="flex items-center justify-between border-b border-ink-700 pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Moderation Gate</h1>
-          <p className="text-sm text-[#666]">Reports submitted by users on accounts, posts, vibes, closet items, comments and mirrors.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-ink-50">Moderation Gate</h1>
+          <p className="text-sm text-ink-300">Reports submitted by users on accounts, posts, vibes, closet items, comments and mirrors.</p>
         </div>
-        <button onClick={load} className="flex items-center gap-2 rounded-xl border border-[#222] px-3 py-2 text-xs text-gray-300 hover:border-[#333]">
+        <button onClick={load} className="flex items-center gap-2 rounded-inner border border-ink-700 px-3 py-2 text-xs text-ink-200 hover:border-brand-line">
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
@@ -82,24 +82,24 @@ export default function ModerationGate() {
           <button
             key={s}
             onClick={() => setStatus(s)}
-            className={`rounded-full px-4 py-1.5 text-xs font-semibold ${status === s ? 'bg-white text-black' : 'bg-[#111] text-gray-400 border border-[#1A1A1A]'}`}
+            className={`rounded-full px-4 py-1.5 text-xs font-semibold ${status === s ? 'bg-ink-50 text-ink-900' : 'bg-ink-800 text-ink-300 border border-ink-700'}`}
           >
             {s.charAt(0) + s.slice(1).toLowerCase()}
           </button>
         ))}
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-bad">{error}</p>}
 
       {!loading && !error && reports.length === 0 ? (
-        <div className="rounded-2xl bg-[#111] p-8 border border-[#1A1A1A] flex flex-col items-center justify-center min-h-[240px] text-center">
-          <ShieldAlert size={40} className="text-gray-600 mb-3" />
-          <h3 className="text-base font-bold text-gray-300">No {status.toLowerCase()} reports</h3>
+        <div className="rounded-card bg-ink-800 p-8 border border-ink-700 flex flex-col items-center justify-center min-h-[240px] text-center">
+          <ShieldAlert size={40} className="text-ink-400 mb-3" />
+          <h3 className="text-base font-semibold text-ink-100">No {status.toLowerCase()} reports</h3>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-[#1A1A1A]">
+        <div className="overflow-x-auto rounded-card border border-ink-700 bg-ink-800">
           <table className="w-full text-left text-sm">
-            <thead className="bg-[#0D0D0D] text-[11px] uppercase tracking-wider text-[#666]">
+            <thead className="bg-ink-850 text-label uppercase text-ink-400">
               <tr>
                 <th className="px-4 py-3">When</th>
                 <th className="px-4 py-3">Type</th>
@@ -112,31 +112,31 @@ export default function ModerationGate() {
             </thead>
             <tbody>
               {reports.map(r => (
-                <tr key={r.id} className="border-t border-[#1A1A1A] align-top">
-                  <td className="px-4 py-3 text-gray-400 whitespace-nowrap">{new Date(r.createdAt).toLocaleString()}</td>
+                <tr key={r.id} className="border-t border-ink-700 align-top">
+                  <td className="px-4 py-3 text-ink-300 whitespace-nowrap">{new Date(r.createdAt).toLocaleString()}</td>
                   <td className="px-4 py-3">{r.contentType ?? '—'}</td>
                   <td className="px-4 py-3">
-                    <div className="font-semibold text-red-300">{REASON_LABEL[r.reason] ?? r.reason}</div>
-                    {r.details && <div className="mt-1 max-w-xs text-xs text-gray-400">{r.details}</div>}
+                    <div className="font-semibold text-bad">{REASON_LABEL[r.reason] ?? r.reason}</div>
+                    {r.details && <div className="mt-1 max-w-xs text-xs text-ink-300">{r.details}</div>}
                   </td>
                   <td className="px-4 py-3">{r.reportedUser ? `@${r.reportedUser.username}` : '—'}</td>
-                  <td className="px-4 py-3 text-gray-400">{r.reporter ? `@${r.reporter.username}` : '—'}</td>
-                  <td className="px-4 py-3 font-mono text-[11px] text-gray-500">{r.contentId}</td>
+                  <td className="px-4 py-3 text-ink-300">{r.reporter ? `@${r.reporter.username}` : '—'}</td>
+                  <td className="px-4 py-3 font-mono text-[11px] text-ink-400">{r.contentId}</td>
                   {status === 'OPEN' && (
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">
                         {r.contentType !== 'USER' && (
                           <button disabled={busyId === r.id} onClick={() => act(r, 'RESOLVED', true)}
-                            className="flex items-center gap-1 rounded-lg bg-red-500/15 px-2.5 py-1.5 text-xs text-red-300 hover:bg-red-500/25 disabled:opacity-40">
+                            className="flex items-center gap-1 rounded-lg bg-red-500/15 px-2.5 py-1.5 text-xs text-bad hover:bg-red-500/25 disabled:opacity-40">
                             <Trash2 size={12} /> Remove
                           </button>
                         )}
                         <button disabled={busyId === r.id} onClick={() => act(r, 'RESOLVED')}
-                          className="flex items-center gap-1 rounded-lg bg-green-500/15 px-2.5 py-1.5 text-xs text-green-300 hover:bg-green-500/25 disabled:opacity-40">
+                          className="flex items-center gap-1 rounded-lg bg-green-500/15 px-2.5 py-1.5 text-xs text-ok hover:bg-green-500/25 disabled:opacity-40">
                           <Check size={12} /> Resolved
                         </button>
                         <button disabled={busyId === r.id} onClick={() => act(r, 'DISMISSED')}
-                          className="flex items-center gap-1 rounded-lg bg-[#1A1A1A] px-2.5 py-1.5 text-xs text-gray-300 hover:bg-[#222] disabled:opacity-40">
+                          className="flex items-center gap-1 rounded-lg bg-ink-700 px-2.5 py-1.5 text-xs text-ink-200 hover:bg-ink-600 disabled:opacity-40">
                           <X size={12} /> Dismiss
                         </button>
                       </div>
@@ -148,7 +148,7 @@ export default function ModerationGate() {
           </table>
         </div>
       )}
-      <p className="text-[11px] text-gray-600">For reported accounts, suspend the user from User Directory, then mark the report resolved.</p>
+      <p className="text-xs text-ink-400">For reported accounts, suspend the user from User Directory, then mark the report resolved.</p>
     </div>
   );
 }

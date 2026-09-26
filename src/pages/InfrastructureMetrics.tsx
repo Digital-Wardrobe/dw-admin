@@ -37,11 +37,11 @@ export default function InfrastructureMetrics() {
     try {
       const token = localStorage.getItem('admin_session_token');
       const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.fluntr.com/api/admin/';
-      const url = `${API_URL}infrastructure-metrics${force ? '?force=true' : ''}`;
+      const url = `${API_URL}infra-metrics${force ? '?force=true' : ''}`;
       const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
       if (res.data.success) setInfra(res.data.data);
     } catch (err) {
-      console.error('Infrastructure lookup fault:', err);
+      console.error('Infrastructure request failed:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -61,49 +61,49 @@ export default function InfrastructureMetrics() {
   const otherRows = tableSizes.filter(t => !primaryTables.includes(t.table));
 
   if (loading) return (
-    <div className="flex h-screen items-center justify-center bg-[#0B0F19] text-indigo-400 font-mono text-xs">
+    <div className="flex h-screen items-center justify-center bg-[#0B0F19] text-brand font-mono text-xs">
       Querying S3 Storage Blobs &amp; Schema Rows...
     </div>
   );
 
   return (
-    <div className="space-y-6 animate-fadeIn font-mono text-[#E2E8F0]">
+    <div className="space-y-6 animate-fadeIn font-mono text-ink-100">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-black text-white uppercase tracking-tight">Cloud Infrastructure Logs</h1>
-          <p className="text-xs text-[#64748B] mt-0.5">Real-time AWS data metrics tracking relational storage rows and asset sizes.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-ink-50">Infrastructure</h1>
+          <p className="text-xs text-ink-400 mt-0.5">Database row counts and S3 storage use, read live from AWS.</p>
         </div>
         <button
           onClick={() => loadInfraDiagnostics(true)}
           disabled={refreshing}
-          className="flex items-center gap-1.5 text-[10px] font-bold text-indigo-400 bg-indigo-950/30 border border-indigo-900/40 px-3 py-2 rounded-lg hover:bg-indigo-600 hover:text-white transition-all cursor-pointer disabled:opacity-40"
+          className="flex items-center gap-1.5 text-[10px] font-bold text-brand bg-ink-850/30 border border-ink-700/40 px-3 py-2 rounded-lg hover:bg-brand hover:text-white transition-all cursor-pointer disabled:opacity-40"
         >
           <RefreshCw size={11} className={refreshing ? 'animate-spin' : ''} />
-          {refreshing ? 'Refreshing...' : 'Force Refresh'}
+          {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
       </div>
 
       {/* Top Static Core Network Mappings */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#0F172A] border border-[#1E293B] p-4 rounded-xl flex items-center gap-3">
-          <HardDrive className="text-indigo-500" size={18} />
+        <div className="bg-[#0E1320] border border-[#1E293B] p-4 rounded-xl flex items-center gap-3">
+          <HardDrive className="text-brand" size={18} />
           <div>
-            <div className="text-[9px] text-[#64748B] uppercase font-bold">AWS S3 Vector</div>
-            <div className="text-xs font-black text-white mt-0.5">digital-wardrobe-images</div>
+            <div className="text-[9px] text-ink-400 uppercase font-bold">AWS S3 Vector</div>
+            <div className="text-xs font-semibold text-white mt-0.5">digital-wardrobe-images</div>
           </div>
         </div>
-        <div className="bg-[#0F172A] border border-[#1E293B] p-4 rounded-xl flex items-center gap-3">
+        <div className="bg-[#0E1320] border border-[#1E293B] p-4 rounded-xl flex items-center gap-3">
           <Database className="text-emerald-500" size={18} />
           <div>
-            <div className="text-[9px] text-[#64748B] uppercase font-bold">PostgreSQL RDS Engine</div>
-            <div className="text-xs font-black text-white mt-0.5">Connected (Active Pool)</div>
+            <div className="text-[9px] text-ink-400 uppercase font-bold">PostgreSQL RDS Engine</div>
+            <div className="text-xs font-semibold text-white mt-0.5">Connected (Active Pool)</div>
           </div>
         </div>
-        <div className="bg-[#0F172A] border border-[#1E293B] p-4 rounded-xl flex items-center gap-3">
+        <div className="bg-[#0E1320] border border-[#1E293B] p-4 rounded-xl flex items-center gap-3">
           <Cpu className="text-purple-500" size={18} />
           <div>
-            <div className="text-[9px] text-[#64748B] uppercase font-bold">Express Environment Host</div>
-            <div className="text-xs font-black text-white mt-0.5">AWS Elastic Beanstalk</div>
+            <div className="text-[9px] text-ink-400 uppercase font-bold">Express Environment Host</div>
+            <div className="text-xs font-semibold text-white mt-0.5">AWS Elastic Beanstalk</div>
           </div>
         </div>
       </div>
@@ -112,19 +112,19 @@ export default function InfrastructureMetrics() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* AWS S3 Density Metrics */}
-        <div className="bg-[#0F172A] border border-[#1E293B] p-5 rounded-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#1E293B] pb-2 text-[#94A3B8] font-bold text-xs uppercase">
-            <Layers size={14} className="text-indigo-500" />
+        <div className="bg-[#0E1320] border border-[#1E293B] p-5 rounded-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#1E293B] pb-2 text-ink-300 font-bold text-xs uppercase">
+            <Layers size={14} className="text-brand" />
             <span>Object Registry Metrics</span>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-[#1E293B]/30 border border-[#1E293B] p-4 rounded-lg">
               <div className="text-[9px] text-gray-500 uppercase font-bold">Total Wardrobe Images</div>
-              <div className="text-xl font-black mt-1 text-white">{infra?.storage?.objectCount ?? 0}</div>
+              <div className="text-xl font-semibold mt-1 text-white">{infra?.storage?.objectCount ?? 0}</div>
             </div>
             <div className="bg-[#1E293B]/30 border border-[#1E293B] p-4 rounded-lg">
               <div className="text-[9px] text-gray-500 uppercase font-bold">Storage Density Vol.</div>
-              <div className="text-xl font-black mt-1 text-indigo-400">{infra?.storage?.sizeMB ?? '0.00'} <span className="text-xs text-gray-500">MB</span></div>
+              <div className="text-xl font-semibold mt-1 text-brand">{infra?.storage?.sizeMB ?? '0.00'} <span className="text-xs text-gray-500">MB</span></div>
             </div>
           </div>
           <div className="flex justify-between items-center text-xs bg-[#1E293B]/20 p-3 border border-[#1E293B] rounded-lg">
@@ -142,8 +142,8 @@ export default function InfrastructureMetrics() {
         </div>
 
         {/* Database Row Multipliers */}
-        <div className="bg-[#0F172A] border border-[#1E293B] p-5 rounded-xl space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#1E293B] pb-2 text-[#94A3B8] font-bold text-xs uppercase">
+        <div className="bg-[#0E1320] border border-[#1E293B] p-5 rounded-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-[#1E293B] pb-2 text-ink-300 font-bold text-xs uppercase">
             <Database size={14} className="text-emerald-500" />
             <span>Prisma Record Capacities</span>
           </div>
@@ -171,11 +171,11 @@ export default function InfrastructureMetrics() {
       </div>
 
       {/* ── PostgreSQL Physical Table Storage Footprint ──────────────────────── */}
-      <div className="bg-[#0F172A] border border-[#1E293B] p-5 rounded-xl space-y-4">
-        <div className="flex items-center gap-2 border-b border-[#1E293B] pb-2 text-[#94A3B8] font-bold text-xs uppercase">
+      <div className="bg-[#0E1320] border border-[#1E293B] p-5 rounded-xl space-y-4">
+        <div className="flex items-center gap-2 border-b border-[#1E293B] pb-2 text-ink-300 font-bold text-xs uppercase">
           <TableProperties size={14} className="text-violet-400" />
           <span>PostgreSQL Physical Table Storage</span>
-          <span className="ml-auto text-[9px] text-[#475569] font-normal normal-case">pg_total_relation_size incl. indexes + TOAST</span>
+          <span className="ml-auto text-[9px] text-ink-400 font-normal normal-case">pg_total_relation_size incl. indexes + TOAST</span>
         </div>
 
         {/* Primary tables — Users, Posts, ClosetItems — highlighted */}
@@ -185,13 +185,13 @@ export default function InfrastructureMetrics() {
               <div className="text-[9px] text-gray-500 uppercase font-bold mb-1">
                 {TABLE_LABELS[row.table] ?? row.table}
               </div>
-              <div className="text-2xl font-black text-white leading-tight">
+              <div className="text-2xl font-semibold text-white leading-tight">
                 {formatBytes(row.bytes)}
               </div>
               <div className="text-[10px] text-violet-400 mt-1 font-mono">{row.prettySize}</div>
             </div>
           )) : (
-            <div className="col-span-3 text-center py-6 text-xs text-[#475569]">
+            <div className="col-span-3 text-center py-6 text-xs text-ink-400">
               No table size data — backend may not have returned $queryRaw results yet.
             </div>
           )}
@@ -202,7 +202,7 @@ export default function InfrastructureMetrics() {
           <div className="border border-[#1E293B] rounded-lg overflow-hidden">
             <table className="w-full text-xs">
               <thead>
-                <tr className="bg-[#1E293B]/30 text-[#64748B] uppercase text-[9px] tracking-wider font-bold border-b border-[#1E293B]">
+                <tr className="bg-[#1E293B]/30 text-ink-400 uppercase text-[9px] tracking-wider font-bold border-b border-[#1E293B]">
                   <th className="py-2 pl-4 text-left">Table</th>
                   <th className="py-2 text-right pr-4">Physical Size</th>
                   <th className="py-2 text-right pr-4">Raw Bytes</th>
@@ -213,7 +213,7 @@ export default function InfrastructureMetrics() {
                   <tr key={row.table} className="hover:bg-[#1E293B]/20 transition-colors">
                     <td className="py-2.5 pl-4 font-semibold">{TABLE_LABELS[row.table] ?? row.table}</td>
                     <td className="py-2.5 text-right pr-4 text-violet-300 font-mono font-bold">{formatBytes(row.bytes)}</td>
-                    <td className="py-2.5 text-right pr-4 text-[#475569] font-mono text-[10px]">{row.bytes.toLocaleString()}</td>
+                    <td className="py-2.5 text-right pr-4 text-ink-400 font-mono text-[10px]">{row.bytes.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
