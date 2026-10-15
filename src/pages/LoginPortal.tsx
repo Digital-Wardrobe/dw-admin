@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Lock, User, Eye, EyeOff, AlertTriangle, Loader2 } from 'lucide-react';
 import { API_BASE_URL } from '../config';
+import { STAFF_ROLES } from '../lib/me';
 
 export default function LoginPortal() {
   const [identifier, setIdentifier] = useState('');
@@ -10,7 +10,6 @@ export default function LoginPortal() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +32,7 @@ export default function LoginPortal() {
       }
 
       const { accessToken, user } = res.data;
-      const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPERADMIN';
+      const isAdmin = STAFF_ROLES.includes(user?.role);
 
       if (!isAdmin) {
         // A valid account without admin rights: say so plainly rather than
@@ -46,7 +45,8 @@ export default function LoginPortal() {
 
       localStorage.setItem('admin_session_token', accessToken);
       localStorage.setItem('admin_user', JSON.stringify(user));
-      navigate('/admin/dashboard');
+      localStorage.removeItem('admin_me');   // the role's pages are fetched fresh
+      window.location.assign('/admin');      // full load so the access check starts clean
     } catch (err: any) {
       const status = err?.response?.status;
       setError(
@@ -67,7 +67,7 @@ export default function LoginPortal() {
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0"
-        style={{ background: 'radial-gradient(60% 50% at 50% 0%, rgba(201,168,76,0.07), transparent 70%)' }}
+        style={{ background: 'radial-gradient(60% 50% at 50% 0%, rgb(var(--brand) / 0.07), transparent 70%)' }}
       />
 
       <main className="relative z-10 w-full max-w-[380px]">

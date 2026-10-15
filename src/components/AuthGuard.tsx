@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { STAFF_ROLES } from '../lib/me';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
 
   try {
     const user = JSON.parse(userJson);
-    if (user.role === 'ADMIN' || user.role === 'SUPERADMIN') {
+    if (STAFF_ROLES.includes(user.role)) {
       return <>{children}</>;
     }
   } catch (err) {

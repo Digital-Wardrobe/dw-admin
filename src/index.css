@@ -6,6 +6,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Colour tokens as "r g b" so Tailwind's opacity modifiers work (bg-ink-850/50).
+   Light is the default; .dark on <html> (Settings → theme, or the system setting) swaps them. */
+:root {
+  color-scheme: light;
+  --ink-950: 255 255 255;
+  --ink-900: 246 247 248;
+  --ink-850: 255 255 255;
+  --ink-800: 255 255 255;
+  --ink-700: 230 231 234;
+  --ink-600: 210 212 217;
+  --ink-400: 112 116 127;
+  --ink-300: 86 90 99;
+  --ink-100: 38 40 46;
+  --ink-50: 21 23 27;
+  --brand: 14 110 110;
+  --brand-soft: 18 137 138;
+  --brand-dim: 10 82 82;
+  --ok: 21 128 61;
+  --warn: 180 83 9;
+  --bad: 220 38 38;
+  /* Chart series: the accent first, then muted hues that stay apart for colour-blind readers */
+  --c1: 14 110 110;  --c2: 79 109 186;  --c3: 202 138 4;  --c4: 190 72 104;
+  --c5: 124 92 191;  --c6: 101 130 48;  --c7: 14 135 179; --c8: 130 135 145;
+  /* One hue stepped by lightness, for parts of one whole */
+  --s1: 14 110 110;  --s2: 62 154 151;  --s3: 127 186 182; --s4: 195 214 212;
+}
+:root.dark {
+  color-scheme: dark;
+  --ink-950: 10 12 15;
+  --ink-900: 13 15 19;
+  --ink-850: 19 22 27;
+  --ink-800: 22 25 31;
+  --ink-700: 39 43 51;
+  --ink-600: 55 60 70;
+  --ink-400: 140 145 156;
+  --ink-300: 168 172 181;
+  --ink-100: 218 220 225;
+  --ink-50: 243 244 246;
+  --brand: 63 181 177;
+  --brand-soft: 94 199 195;
+  --brand-dim: 42 140 137;
+  --ok: 74 222 128;
+  --warn: 251 191 36;
+  --bad: 248 113 113;
+  --c1: 63 181 177;  --c2: 125 150 230; --c3: 234 179 8;   --c4: 236 112 146;
+  --c5: 167 139 250; --c6: 163 196 92;  --c7: 56 189 248;  --c8: 160 165 175;
+  --s1: 63 181 177;  --s2: 45 138 135;  --s3: 31 98 96;    --s4: 24 64 63;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -61,8 +110,8 @@
     z-index: 1;
     opacity: 0.6;
     background-image:
-      radial-gradient(rgba(21,23,27,0.018) 1px, transparent 1px),
-      radial-gradient(rgba(21,23,27,0.012) 1px, transparent 1px);
+      radial-gradient(rgb(var(--ink-50) / 0.018) 1px, transparent 1px),
+      radial-gradient(rgb(var(--ink-50) / 0.012) 1px, transparent 1px);
     background-size: 3px 3px, 5px 5px;
     background-position: 0 0, 1px 2px;
   }

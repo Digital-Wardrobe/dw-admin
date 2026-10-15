@@ -12,6 +12,7 @@ import { MemoryRouter, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { AdminLayout } from './App';
+import { MeProvider } from './lib/me';
 import DashboardSummary from './pages/DashboardSummary';
 import BusinessMetrics from './pages/BusinessMetrics';
 import UserManagement from './pages/UserManagement';
@@ -87,7 +88,12 @@ const FIXTURES: Record<string, any> = {
 
 /* Answer from fixtures instead of the network. Nothing reaches the internet. */
 const match = (url: string) => Object.keys(FIXTURES).find(k => url.includes(k));
+const PREVIEW_ME = {
+  id: 'preview', name: 'preview', role: 'SUPERADMIN',
+  permissions: ['overview.read', 'ai.read', 'behaviour.read', 'business.read', 'infra.read', 'export', 'users.read', 'users.reveal', 'users.act', 'users.timeline', 'moderation', 'ops.write', 'dataset.build', 'audit.read', 'prices.write', 'staff', 'me'],
+};
 axios.defaults.adapter = async (config: any) => {
+  if (/\/me$/.test(config.url || '')) return { data: PREVIEW_ME, status: 200, statusText: 'OK', headers: {}, config } as any;
   const key = match(config.url || '');
   await new Promise(r => setTimeout(r, 420));   // enough to see skeletons
   return {
@@ -123,6 +129,7 @@ createRoot(document.getElementById('root')!).render(
     {/* MemoryRouter keeps navigation entirely in memory, so the preview works
         on static hosting with no server-side rewrite rules. */}
     <MemoryRouter initialEntries={['/admin/dashboard']}>
+      <MeProvider>
       <AdminLayout>
         <Routes>
           <Route path="/admin/dashboard" element={<DashboardSummary />} />
@@ -133,6 +140,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
         </Routes>
       </AdminLayout>
+      </MeProvider>
       <PreviewBanner />
     </MemoryRouter>
   </React.StrictMode>,
