@@ -32,7 +32,7 @@ const MoveOrKeep = lazy(() => import('./pages/ai/MoveOrKeep'));
 const Alerts = lazy(() => import('./pages/ai/Alerts'));
 const Reconciliation = lazy(() => import('./pages/ai/Reconciliation'));
 const GpuPlans = lazy(() => import('./pages/ai/GpuPlans'));
-const Support = lazy(() => import('./pages/ops/Support'));
+const Support = lazy(() => import('./pages/support/Support'));
 const PriceTable = lazy(() => import('./pages/ops/PriceTable'));
 import AuthGuard from './components/AuthGuard';
 import { MeProvider, useMe } from './lib/me';
@@ -71,13 +71,13 @@ export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
   { group: 'Operations', items: [
     { path: '/admin/users', name: 'Users', icon: UsersIcon, perm: 'users.read', element: <Users /> },
     { path: '/admin/moderation', name: 'Reports', icon: ShieldAlert, perm: 'moderation', element: <Moderation /> },
-    { path: '/admin/support', name: 'Support', icon: LifeBuoy, perm: 'support', element: <Support /> },
+    { path: '/admin/support', name: 'Support', icon: LifeBuoy, perm: 'support|support.insights', element: <Support /> },
     { path: '/admin/infra', name: 'Infrastructure', icon: Server, perm: 'infra.read', element: <Infrastructure /> },
     { path: '/admin/flags', name: 'Feature flags', icon: ToggleRight, perm: 'overview.read', element: <FeatureFlags /> },
     { path: '/admin/campaigns', name: 'Announcements', icon: Megaphone, perm: 'overview.read', element: <Campaigns /> },
     { path: '/admin/versions', name: 'App versions', icon: Smartphone, perm: 'overview.read', element: <AppVersions /> },
     { path: '/admin/prices', name: 'Price table', icon: Tags, perm: 'ai.read', element: <PriceTable /> },
-    { path: '/admin/staff', name: 'Team', icon: UserPlus, perm: 'staff', element: <Team /> },
+    { path: '/admin/staff', name: 'Team and access', icon: UserPlus, perm: 'staff', element: <Team /> },
     { path: '/admin/audit', name: 'Audit log', icon: ScrollText, perm: 'audit.read', element: <AuditLog /> },
   ] },
 ];

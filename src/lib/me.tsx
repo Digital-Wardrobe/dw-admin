@@ -7,7 +7,7 @@ import { getAdminToken } from './useAdminApi';
    request anyway; this only decides which pages and buttons to show. */
 
 export type Role = 'SUPERADMIN' | 'ADMIN' | 'ANALYST' | 'MODERATOR' | 'SUPPORT';
-export type Me = { id: string; name: string; role: Role; permissions: string[] };
+export type Me = { id: string; name: string; role: Role; permissions: string[]; profile?: string | null; displayName?: string | null };
 export const STAFF_ROLES: Role[] = ['SUPERADMIN', 'ADMIN', 'ANALYST', 'MODERATOR', 'SUPPORT'];
 
 type Ctx = { me: Me | null; loading: boolean; error: string | null; can: (perm: string) => boolean; reload: () => void };
@@ -37,7 +37,8 @@ export function MeProvider({ children }: { children: React.ReactNode }) {
     return () => { live = false; };
   }, [nonce]);
 
-  const can = useCallback((perm: string) => !!me?.permissions.includes(perm), [me]);
+  // 'a|b' = any of them (a page several profiles can open)
+  const can = useCallback((perm: string) => !!me && perm.split('|').some((p) => me.permissions.includes(p)), [me]);
   return <MeContext.Provider value={{ me, loading, error, can, reload: () => setNonce((n) => n + 1) }}>{children}</MeContext.Provider>;
 }
 
