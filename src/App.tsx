@@ -3,7 +3,7 @@ import React, { Suspense, lazy, useState } from 'react';
 import {
   LayoutDashboard, TrendingUp, Users as UsersIcon, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
   ToggleRight, Megaphone, Smartphone, ScrollText, IndianRupee, CreditCard, ShoppingBag,
-  Activity, Filter, Sparkles, Shirt, Boxes, History, Database, Gauge, LifeBuoy,
+  Activity, Filter, Sparkles, Shirt, Boxes, History, Database, Gauge, LifeBuoy, Ticket,
 } from 'lucide-react';
 
 const Overview = lazy(() => import('./pages/Overview'));
@@ -34,6 +34,7 @@ const Reconciliation = lazy(() => import('./pages/ai/Reconciliation'));
 const GpuPlans = lazy(() => import('./pages/ai/GpuPlans'));
 const Support = lazy(() => import('./pages/support/Support'));
 const PriceTable = lazy(() => import('./pages/ops/PriceTable'));
+const Coupons = lazy(() => import('./pages/ops/Coupons'));
 import AuthGuard from './components/AuthGuard';
 import { MeProvider, useMe } from './lib/me';
 import { themePref, setThemePref, type ThemePref } from './lib/theme';
@@ -77,6 +78,7 @@ export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
     { path: '/admin/campaigns', name: 'Announcements', icon: Megaphone, perm: 'overview.read', element: <Campaigns /> },
     { path: '/admin/versions', name: 'App versions', icon: Smartphone, perm: 'overview.read', element: <AppVersions /> },
     { path: '/admin/prices', name: 'Price table', icon: Tags, perm: 'ai.read', element: <PriceTable /> },
+    { path: '/admin/coupons', name: 'Coupons', icon: Ticket, perm: 'promo.codes', element: <Coupons /> },
     { path: '/admin/staff', name: 'Team and access', icon: UserPlus, perm: 'staff', element: <Team /> },
     { path: '/admin/audit', name: 'Audit log', icon: ScrollText, perm: 'audit.read', element: <AuditLog /> },
   ] },

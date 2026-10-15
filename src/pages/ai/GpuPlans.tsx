@@ -106,8 +106,28 @@ function PlanTable({ section, rows, plans, canEdit, onSaved, saved }: {
     await adminSend('PUT', `ai-settings/${section}`, body);
     onSaved();
   };
+  // Saved values that differ from the plan defaults in the code (src/config/plans.js)
+  const overrides = Object.values(rows).reduce((n, r) => n + plans.filter((p) => shown(r.current[p]) !== shown(r.defaults[p])).length, 0);
+  const [resetting, setResetting] = useState(false);
+  const [resetErr, setResetErr] = useState<string | null>(null);
+  const reset = async () => {
+    if (!window.confirm(`Put ${overrides} value${overrides === 1 ? '' : 's'} back to the plan defaults? Live on every server within a minute.`)) return;
+    setResetting(true); setResetErr(null);
+    try { await adminSend('PUT', `ai-settings/${section}`, {}); onSaved(); }
+    catch (e) { setResetErr((e as Error).message); }
+    finally { setResetting(false); }
+  };
   return (
     <>
+      {canEdit && overrides > 0 && (
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-ink-700 px-3 py-2 text-xs">
+          <span className="text-ink-300">
+            {overrides} value{overrides === 1 ? ' differs' : 's differ'} from the plan defaults (marked with a dot).
+            {resetErr && <span role="alert" className="ml-2 text-bad">{resetErr}</span>}
+          </span>
+          <button className={btnCls} onClick={reset} disabled={resetting}>{resetting ? 'Resetting…' : 'Use plan defaults'}</button>
+        </div>
+      )}
       <div className="-mx-1 overflow-x-auto">
         <table className="w-full min-w-[560px]">
           <thead>
