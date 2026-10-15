@@ -1,3 +1,6 @@
+/** A colour defined as "r g b" in a CSS variable, with Tailwind's opacity modifier. */
+const v = (name) => `rgb(var(--${name}) / <alpha-value>)`;
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -7,36 +10,33 @@ export default {
   theme: {
     extend: {
       colors: {
-        // One gray family (cool / slate). Previously the shell used slate while
-        // pages used neutral #1A1A1A, so two different blacks sat side by side.
+        // Every colour is a CSS variable (src/index.css) so the console reads in light
+        // and dark: the same class names, swapped values. One gray family, one accent.
         ink: {
-          950: '#FFFFFF',  // contrast against the accent (button label)
-          900: '#F6F7F8',  // app canvas
-          850: '#FFFFFF',  // sidebar / raised surface
-          800: '#FFFFFF',  // card
-          700: '#E6E7EA',  // hairline border
-          600: '#D2D4D9',  // strong border
-          400: '#767A85',  // dim text
-          300: '#565A63',  // muted text
-          100: '#26282E',  // body text
-          50:  '#15171B',  // headings
+          950: v('ink-950'),  // contrast against the accent (button label)
+          900: v('ink-900'),  // app canvas
+          850: v('ink-850'),  // sidebar / raised surface
+          800: v('ink-800'),  // card
+          700: v('ink-700'),  // hairline border
+          600: v('ink-600'),  // strong border
+          400: v('ink-400'),  // dim text
+          300: v('ink-300'),  // muted text
+          100: v('ink-100'),  // body text
+          50:  v('ink-50'),   // headings
         },
-        // Single accent, taken from the Fluntr marketing site so the admin reads
-        // as the same product. Replaces the indigo/cyan/magenta/violet mix.
-        // Single accent, under 80% saturation, deliberately not a hue that
-        // already carries meaning here: red is error and green is healthy, so
-        // the accent stays out of the semantic set.
+        // Single accent, taken from the Fluntr marketing site. Deliberately not a hue
+        // that already carries meaning here: red is error and green is healthy.
         brand: {
-          DEFAULT: '#0E6E6E',
-          soft: '#12898A',
-          dim: '#0A5252',
-          wash: 'rgba(14,110,110,0.08)',
-          line: 'rgba(14,110,110,0.26)',
+          DEFAULT: v('brand'),
+          soft: v('brand-soft'),
+          dim: v('brand-dim'),
+          wash: 'rgb(var(--brand) / 0.08)',
+          line: 'rgb(var(--brand) / 0.26)',
         },
         // Semantic colours are for state only, never decoration.
-        ok:   '#4ADE80',
-        warn: '#FBBF24',
-        bad:  '#F87171',
+        ok:   v('ok'),
+        warn: v('warn'),
+        bad:  v('bad'),
       },
       fontFamily: {
         sans: ['Geist', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
