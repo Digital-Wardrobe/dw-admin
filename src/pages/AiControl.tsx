@@ -19,8 +19,8 @@ type Settings = {
   plans: string[];
   limits: Record<string, { window: string; defaults: PerPlan; current: PerPlan }>;
   settings: Record<string, { defaults: PerPlan; current: PerPlan }>;
-  gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>;
-  defaults: { gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number> };
+  gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>; group?: Record<string, number>;
+  defaults: { gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>; group?: Record<string, number> };
 };
 
 const FEATURE_LABEL: Record<string, string> = {
@@ -38,6 +38,10 @@ const GPU_LABEL: Record<string, string> = {
 const QC_LABEL: Record<string, string> = {
   minSimilarity: 'Min similarity to source (0–1)', maxBodyShare: 'Max skin / face share (0–1)',
   minBorderWhite: 'Min white border (0–1)', maxPersonProb: 'Max "person / mannequin" score (0–1)', maxFree: 'Free retries per shot',
+};
+
+const GROUP_LABEL: Record<string, string> = {
+  sameOutfit: 'Same outfit at similarity ≥ (0–1)', unsureBand: 'Ask the user when within ± of it',
 };
 
 const authed = () => ({ headers: { Authorization: `Bearer ${getAdminToken()}` } });
@@ -110,7 +114,7 @@ function PlanTable({ section, rows, plans, onSaved }: {
 
 /** Flat number settings (gpu / qc / retry). */
 function NumberForm({ section, values, defaults, labels, onSaved }: {
-  section: 'gpu' | 'qc' | 'retry'; values: Record<string, number>; defaults: Record<string, number>; labels: Record<string, string>; onSaved: () => void;
+  section: 'gpu' | 'qc' | 'retry' | 'group'; values: Record<string, number>; defaults: Record<string, number>; labels: Record<string, string>; onSaved: () => void;
 }) {
   const [draft, setDraft] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -265,6 +269,12 @@ export default function AiControl() {
                 <CardHeader title="Retries" hint="Free; after this, the user is sent to support" />
                 <NumberForm section="retry" values={cfg.data.retry} defaults={cfg.data.defaults.retry} labels={QC_LABEL} onSaved={cfg.reload} />
               </Card>
+              {cfg.data.group && cfg.data.defaults.group && (
+                <Card>
+                  <CardHeader title="Multi-photo scan" hint="When photos count as one outfit (one scan)" />
+                  <NumberForm section="group" values={cfg.data.group} defaults={cfg.data.defaults.group} labels={GROUP_LABEL} onSaved={cfg.reload} />
+                </Card>
+              )}
             </div>
           </div>
         </>
