@@ -1,15 +1,20 @@
 import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import React, { Suspense, lazy, useState } from 'react';
 import {
-  LayoutDashboard, TrendingUp, Users, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
+  LayoutDashboard, TrendingUp, Users as UsersIcon, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
+  ToggleRight, Megaphone, Smartphone, ScrollText,
 } from 'lucide-react';
 
-const DashboardSummary = lazy(() => import('./pages/DashboardSummary'));
+const Overview = lazy(() => import('./pages/Overview'));
 const BusinessMetrics = lazy(() => import('./pages/BusinessMetrics'));
-const UserManagement = lazy(() => import('./pages/UserManagement'));
-const ModerationGate = lazy(() => import('./pages/ModerationGate'));
-const InfrastructureMetrics = lazy(() => import('./pages/InfrastructureMetrics'));
-const StaffManagement = lazy(() => import('./pages/StaffManagement'));
+const Users = lazy(() => import('./pages/Users'));
+const Moderation = lazy(() => import('./pages/Moderation'));
+const Infrastructure = lazy(() => import('./pages/Infrastructure'));
+const Team = lazy(() => import('./pages/ops/Team'));
+const AuditLog = lazy(() => import('./pages/ops/AuditLog'));
+const FeatureFlags = lazy(() => import('./pages/ops/FeatureFlags'));
+const Campaigns = lazy(() => import('./pages/ops/Campaigns'));
+const AppVersions = lazy(() => import('./pages/ops/AppVersions'));
 import LoginPortal from './pages/LoginPortal';
 const AiCosts = lazy(() => import('./pages/ai/AiCosts'));
 const MoveOrKeep = lazy(() => import('./pages/ai/MoveOrKeep'));
@@ -26,7 +31,7 @@ import { themePref, setThemePref, type ThemePref } from './lib/theme';
 type NavItem = { path: string; name: string; icon: any; perm: string; element: React.ReactNode };
 export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
   { group: 'Overview', items: [
-    { path: '/admin/dashboard', name: 'Overview', icon: LayoutDashboard, perm: 'overview.read', element: <DashboardSummary /> },
+    { path: '/admin/dashboard', name: 'Overview', icon: LayoutDashboard, perm: 'overview.read', element: <Overview /> },
   ] },
   { group: 'AI & Costs', items: [
     { path: '/admin/ai', name: 'AI & Costs', icon: Cpu, perm: 'ai.read', element: <AiCosts /> },
@@ -38,11 +43,15 @@ export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
     { path: '/admin/business', name: 'Growth', icon: TrendingUp, perm: 'business.read', element: <BusinessMetrics /> },
   ] },
   { group: 'Operations', items: [
-    { path: '/admin/users', name: 'Users', icon: Users, perm: 'users.reveal', element: <UserManagement /> },
-    { path: '/admin/moderation', name: 'Reports', icon: ShieldAlert, perm: 'moderation', element: <ModerationGate /> },
-    { path: '/admin/infra', name: 'Infrastructure', icon: Server, perm: 'infra.read', element: <InfrastructureMetrics /> },
+    { path: '/admin/users', name: 'Users', icon: UsersIcon, perm: 'users.read', element: <Users /> },
+    { path: '/admin/moderation', name: 'Reports', icon: ShieldAlert, perm: 'moderation', element: <Moderation /> },
+    { path: '/admin/infra', name: 'Infrastructure', icon: Server, perm: 'infra.read', element: <Infrastructure /> },
+    { path: '/admin/flags', name: 'Feature flags', icon: ToggleRight, perm: 'overview.read', element: <FeatureFlags /> },
+    { path: '/admin/campaigns', name: 'Announcements', icon: Megaphone, perm: 'overview.read', element: <Campaigns /> },
+    { path: '/admin/versions', name: 'App versions', icon: Smartphone, perm: 'overview.read', element: <AppVersions /> },
     { path: '/admin/prices', name: 'Price table', icon: Tags, perm: 'ai.read', element: <PriceTable /> },
-    { path: '/admin/staff', name: 'Team', icon: UserPlus, perm: 'staff', element: <StaffManagement /> },
+    { path: '/admin/staff', name: 'Team', icon: UserPlus, perm: 'staff', element: <Team /> },
+    { path: '/admin/audit', name: 'Audit log', icon: ScrollText, perm: 'audit.read', element: <AuditLog /> },
   ] },
 ];
 export const NAV = NAV_GROUPS.flatMap((g) => g.items);

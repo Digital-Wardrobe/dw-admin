@@ -11,13 +11,8 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 
-import { AdminLayout } from './App';
+import { AdminLayout, NAV } from './App';
 import { MeProvider } from './lib/me';
-import DashboardSummary from './pages/DashboardSummary';
-import BusinessMetrics from './pages/BusinessMetrics';
-import UserManagement from './pages/UserManagement';
-import InfrastructureMetrics from './pages/InfrastructureMetrics';
-import StaffManagement from './pages/StaffManagement';
 import './index.css';
 
 /* ── Fixtures ──────────────────────────────────────────────────────────────
@@ -131,14 +126,12 @@ createRoot(document.getElementById('root')!).render(
     <MemoryRouter initialEntries={['/admin/dashboard']}>
       <MeProvider>
       <AdminLayout>
-        <Routes>
-          <Route path="/admin/dashboard" element={<DashboardSummary />} />
-          <Route path="/admin/business"  element={<BusinessMetrics />} />
-          <Route path="/admin/users"     element={<UserManagement />} />
-          <Route path="/admin/infra"     element={<InfrastructureMetrics />} />
-          <Route path="/admin/staff"     element={<StaffManagement />} />
-          <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
-        </Routes>
+        <React.Suspense fallback={null}>
+          <Routes>
+            {NAV.map((i) => <Route key={i.path} path={i.path} element={i.element} />)}
+            <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+          </Routes>
+        </React.Suspense>
       </AdminLayout>
       </MeProvider>
       <PreviewBanner />
