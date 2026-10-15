@@ -16,42 +16,10 @@ import { MeProvider } from './lib/me';
 import './index.css';
 
 /* ── Fixtures ──────────────────────────────────────────────────────────────
-   Deliberately uneven numbers and real-looking names. Round figures and
-   "Jane Smith" make a design review lie to you about how the layout copes. */
-const FIXTURES: Record<string, any> = {
-  'dashboard-summary': {
-    success: true,
-    data: {
-      summary: { totalUsers: 12847, totalActivityLogs: 341962 },
-      networkDistribution: [
-        { networkType: 'WIFI',     _count: { _all: 7412 } },
-        { networkType: 'CELLULAR', _count: { _all: 4186 } },
-        { networkType: 'UNKNOWN',  _count: { _all: 1249 } },
-      ],
-    },
-  },
-  'users-directory': {
-    success: true,
-    data: {
-      totalPages: 214,
-      users: [
-        { id: 'u1', profileName: 'Ananya Raghunathan', username: 'ananyar', email: 'ananya.r@hey.com',        role: 'USER',       isOnboarded: true,  storageAssets: { estimatedMB: '184.60', fileCount: 92 } },
-        { id: 'u2', profileName: 'Tomás Vilanova',     username: 'tvilanova', email: 'tomas@vilanova.studio', role: 'USER',       isOnboarded: true,  storageAssets: { estimatedMB: '76.10',  fileCount: 41 } },
-        { id: 'u3', profileName: 'Priya Balakrishnan', username: 'priyab',  email: 'priya.b@outlook.com',     role: 'ADMIN',      isOnboarded: true,  storageAssets: { estimatedMB: '12.40',  fileCount: 8 } },
-        { id: 'u4', profileName: 'Marcus Oyelaran',    username: 'moyelaran', email: 'm.oyelaran@gmail.com',  role: 'USER',       isOnboarded: false, storageAssets: { estimatedMB: '0.00',   fileCount: 0 } },
-        { id: 'u5', profileName: 'Hana Okonkwo',       username: 'hanao',   email: 'hana@okonkwo.co',         role: 'USER',       isOnboarded: true,  storageAssets: { estimatedMB: '311.80', fileCount: 147 } },
-        { id: 'u6', profileName: 'Rahul Deshmukh',     username: 'rdesh',   email: 'rahul.deshmukh@proton.me',role: 'SUPERADMIN', isOnboarded: true,  storageAssets: { estimatedMB: '4.20',   fileCount: 3 } },
-      ],
-    },
-  },
-  'infra-metrics': {
-    success: true,
-    data: {
-      storage: { objectCount: 48213, sizeMB: '19418.70', avgSizeKB: 412, status: 'WARNING_UNOPTIMIZED' },
-      database: { users: 12847, posts: 28104, closetItems: 96412, messages: 214883 },
-    },
-  },
-};
+   The dashboards' own endpoints have no fixtures yet: each page shows its
+   error state here, which is itself worth reviewing. Add fixtures keyed by a
+   path fragment (e.g. 'business/kpis') to preview a page with numbers. */
+const FIXTURES: Record<string, any> = {};
 
 /* Answer from fixtures instead of the network. Nothing reaches the internet. */
 const match = (url: string) => Object.keys(FIXTURES).find(k => url.includes(k));
@@ -63,10 +31,8 @@ axios.defaults.adapter = async (config: any) => {
   if (/\/me$/.test(config.url || '')) return { data: PREVIEW_ME, status: 200, statusText: 'OK', headers: {}, config } as any;
   const key = match(config.url || '');
   await new Promise(r => setTimeout(r, 420));   // enough to see skeletons
-  return {
-    data: key ? FIXTURES[key] : { success: true, data: {} },
-    status: 200, statusText: 'OK', headers: {}, config,
-  } as any;
+  if (!key) throw Object.assign(new Error('No fixture'), { config, response: { status: 404, data: { message: 'No sample data for this section in the design preview.' }, headers: {}, config } });
+  return { data: FIXTURES[key], status: 200, statusText: 'OK', headers: {}, config } as any;
 };
 
 // AdminLayout reads this for the signed-in label; no real token is involved.

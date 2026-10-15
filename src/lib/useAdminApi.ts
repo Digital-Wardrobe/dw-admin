@@ -24,7 +24,7 @@ type State<T> = {
 
 /**
  * GET an admin endpoint.
- * @param path endpoint relative to API_BASE_URL, e.g. 'dashboard-summary'
+ * @param path endpoint relative to API_BASE_URL, e.g. 'business/kpis'
  * @param options.params query string values
  * @param options.enabled skip the request until it becomes true
  */
