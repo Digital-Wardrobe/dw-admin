@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Search, Eye, X } from 'lucide-react';
 import { useAdminApi } from '../lib/useAdminApi';
 import { adminSend, API_ROOT } from '../lib/api';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useMe } from '../lib/me';
 import { PageHeader, Card, Badge, InlineError, EmptyState, Skeleton } from '../components/ui';
 import { ExportButton, th, td, fmtN, fmtUsd } from '../components/dash';
@@ -135,8 +135,10 @@ function Profile({ refId, onClose, onChanged }: { refId: string; onClose: () => 
 }
 
 export default function Users() {
-  const [input, setInput] = useState('');
-  const [q, setQ] = useState('');
+  // ?q=u_… opens with a pseudonym already searched (links from Support)
+  const [sp] = useSearchParams();
+  const [input, setInput] = useState(sp.get('q') || '');
+  const [q, setQ] = useState(sp.get('q') || '');
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState('');
   const [open, setOpen] = useState<string | null>(null);

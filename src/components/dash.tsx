@@ -155,8 +155,8 @@ export function Spark({ values, height = 28 }: { values: number[]; height?: numb
 }
 
 /** Headline number: value, change against the previous period, and a sparkline. */
-export function Kpi({ label, value, delta, spark, hint, source }: {
-  label: string; value: React.ReactNode; delta?: ReturnType<typeof deltaOf>; spark?: number[]; hint?: string; source?: Source;
+export function Kpi({ label, value, delta, spark, hint, source, children }: {
+  label: string; value: React.ReactNode; delta?: ReturnType<typeof deltaOf>; spark?: number[]; hint?: string; source?: Source; children?: React.ReactNode;
 }) {
   const tone = delta?.tone === 'good' ? 'text-ok' : delta?.tone === 'bad' ? 'text-bad' : 'text-ink-400';
   return (
@@ -170,6 +170,7 @@ export function Kpi({ label, value, delta, spark, hint, source }: {
         {delta && <span className={`text-xs font-medium ${tone}`} title="Against the previous period">{delta.text}</span>}
       </div>
       {spark && <div className="mt-2"><Spark values={spark} /></div>}
+      {children && <div className="mt-2">{children}</div>}
       {hint && <p className="mt-1 text-xs text-ink-400">{hint}</p>}
     </Card>
   );

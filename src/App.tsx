@@ -3,7 +3,7 @@ import React, { Suspense, lazy, useState } from 'react';
 import {
   LayoutDashboard, TrendingUp, Users as UsersIcon, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
   ToggleRight, Megaphone, Smartphone, ScrollText, IndianRupee, CreditCard, ShoppingBag,
-  Activity, Filter, Sparkles, Shirt, Boxes, History, Database,
+  Activity, Filter, Sparkles, Shirt, Boxes, History, Database, Gauge, LifeBuoy,
 } from 'lucide-react';
 
 const Overview = lazy(() => import('./pages/Overview'));
@@ -31,6 +31,8 @@ const AiCosts = lazy(() => import('./pages/ai/AiCosts'));
 const MoveOrKeep = lazy(() => import('./pages/ai/MoveOrKeep'));
 const Alerts = lazy(() => import('./pages/ai/Alerts'));
 const Reconciliation = lazy(() => import('./pages/ai/Reconciliation'));
+const GpuPlans = lazy(() => import('./pages/ai/GpuPlans'));
+const Support = lazy(() => import('./pages/ops/Support'));
 const PriceTable = lazy(() => import('./pages/ops/PriceTable'));
 import AuthGuard from './components/AuthGuard';
 import { MeProvider, useMe } from './lib/me';
@@ -55,6 +57,7 @@ export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
   ] },
   { group: 'AI & Costs', items: [
     { path: '/admin/ai', name: 'AI & Costs', icon: Cpu, perm: 'ai.read', element: <AiCosts /> },
+    { path: '/admin/ai/gpu', name: 'GPU & plans', icon: Gauge, perm: 'ai.read', element: <GpuPlans /> },
     { path: '/admin/ai/move-or-keep', name: 'Move or keep', icon: Scale, perm: 'ai.read', element: <MoveOrKeep /> },
     { path: '/admin/ai/alerts', name: 'Alerts', icon: BellRing, perm: 'ai.read', element: <Alerts /> },
     { path: '/admin/ai/reconciliation', name: 'Reconciliation', icon: Receipt, perm: 'ai.read', element: <Reconciliation /> },
@@ -68,6 +71,7 @@ export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
   { group: 'Operations', items: [
     { path: '/admin/users', name: 'Users', icon: UsersIcon, perm: 'users.read', element: <Users /> },
     { path: '/admin/moderation', name: 'Reports', icon: ShieldAlert, perm: 'moderation', element: <Moderation /> },
+    { path: '/admin/support', name: 'Support', icon: LifeBuoy, perm: 'support', element: <Support /> },
     { path: '/admin/infra', name: 'Infrastructure', icon: Server, perm: 'infra.read', element: <Infrastructure /> },
     { path: '/admin/flags', name: 'Feature flags', icon: ToggleRight, perm: 'overview.read', element: <FeatureFlags /> },
     { path: '/admin/campaigns', name: 'Announcements', icon: Megaphone, perm: 'overview.read', element: <Campaigns /> },
