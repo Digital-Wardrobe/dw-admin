@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
-import { LayoutDashboard, TrendingUp, Users, Server, UserPlus, LogOut, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Users, Server, UserPlus, LogOut, ShieldAlert, Cpu, LifeBuoy } from 'lucide-react';
 
 import DashboardSummary from './pages/DashboardSummary';
 import BusinessMetrics from './pages/BusinessMetrics';
@@ -8,6 +8,8 @@ import UserManagement from './pages/UserManagement';
 import ModerationGate from './pages/ModerationGate';
 import InfrastructureMetrics from './pages/InfrastructureMetrics';
 import StaffManagement from './pages/StaffManagement';
+import AiControl from './pages/AiControl';
+import SupportTickets from './pages/SupportTickets';
 import LoginPortal from './pages/LoginPortal';
 import AuthGuard from './components/AuthGuard';
 
@@ -18,6 +20,8 @@ export const NAV = [
   { path: '/admin/business',  name: 'Growth',        icon: TrendingUp },
   { path: '/admin/users',     name: 'Users',         icon: Users },
   { path: '/admin/moderation', name: 'Reports',      icon: ShieldAlert },
+  { path: '/admin/support',   name: 'Support',       icon: LifeBuoy },
+  { path: '/admin/ai',        name: 'AI & limits',   icon: Cpu },
   { path: '/admin/infra',     name: 'Infrastructure',icon: Server },
   { path: '/admin/staff',     name: 'Team',          icon: UserPlus },
 ];
@@ -133,6 +137,8 @@ export default function App() {
         <Route path="/admin/moderation" element={guarded(<ModerationGate />)} />
         <Route path="/admin/infra"     element={guarded(<InfrastructureMetrics />)} />
         <Route path="/admin/staff"     element={guarded(<StaffManagement />)} />
+        <Route path="/admin/support"   element={guarded(<SupportTickets />)} />
+        <Route path="/admin/ai"        element={guarded(<AiControl />)} />
         {/* Both of these must point at the login route, not at a guarded page:
             AuthGuard redirects unauthenticated visitors here, so sending them
             onward to a guarded route creates an infinite redirect loop. */}
