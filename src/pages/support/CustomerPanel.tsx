@@ -39,7 +39,7 @@ export default function CustomerPanel({ ticketId, onAction }: { ticketId: string
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [who, setWho] = useState<any>(null);
-  const [form, setForm] = useState({ plan: 'PLUS', days: '7', username: '', reason: 'HARASSMENT', details: '' });
+  const [form, setForm] = useState({ plan: 'PRO', days: '7', username: '', reason: 'HARASSMENT', details: '' });
 
   const load = useCallback(async () => {
     try { setD(await getJson(`tickets/${ticketId}/customer`)); setError(null); } catch (e: any) { setError(e.message); }
@@ -117,7 +117,7 @@ export default function CustomerPanel({ ticketId, onAction }: { ticketId: string
           {allowed('goodwill') && (
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
               <span className="text-xs text-ink-400">Goodwill</span>
-              <select aria-label="Plan" className={inputCls} value={form.plan} onChange={(e) => setForm({ ...form, plan: e.target.value })}><option>PLUS</option><option>PRO</option></select>
+              <select aria-label="Plan" className={inputCls} value={form.plan} onChange={(e) => setForm({ ...form, plan: e.target.value })}><option>PRO</option></select>
               <input aria-label="Days" type="number" min={1} max={30} className={`${inputCls} w-16`} value={form.days} onChange={(e) => setForm({ ...form, days: e.target.value })} />
               <button className={btnSm} disabled={!!busy} onClick={() => act('goodwill', { plan: form.plan, days: Number(form.days) }, `Give ${form.days} days of ${form.plan}?`)}>Give days</button>
             </div>
