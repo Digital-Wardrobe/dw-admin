@@ -3,9 +3,17 @@ import React, { Suspense, lazy, useState } from 'react';
 import {
   LayoutDashboard, TrendingUp, Users as UsersIcon, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
   ToggleRight, Megaphone, Smartphone, ScrollText, IndianRupee, CreditCard, ShoppingBag,
+  Activity, Filter, Sparkles, Shirt, Boxes, History, Database,
 } from 'lucide-react';
 
 const Overview = lazy(() => import('./pages/Overview'));
+const Engagement = lazy(() => import('./pages/behaviour/Engagement'));
+const Funnels = lazy(() => import('./pages/behaviour/Funnels'));
+const Recommendations = lazy(() => import('./pages/behaviour/Recommendations'));
+const ContentWardrobe = lazy(() => import('./pages/behaviour/ContentWardrobe'));
+const Segments = lazy(() => import('./pages/behaviour/Segments'));
+const Timeline = lazy(() => import('./pages/behaviour/Timeline'));
+const Training = lazy(() => import('./pages/behaviour/Training'));
 const Business = lazy(() => import('./pages/business/Business'));
 const Growth = lazy(() => import('./pages/business/Growth'));
 const Monetisation = lazy(() => import('./pages/business/Monetisation'));
@@ -35,6 +43,15 @@ type NavItem = { path: string; name: string; icon: any; perm: string; element: R
 export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
   { group: 'Overview', items: [
     { path: '/admin/dashboard', name: 'Overview', icon: LayoutDashboard, perm: 'overview.read', element: <Overview /> },
+  ] },
+  { group: 'Behaviour', items: [
+    { path: '/admin/behaviour', name: 'Engagement', icon: Activity, perm: 'behaviour.read', element: <Engagement /> },
+    { path: '/admin/behaviour/funnels', name: 'Funnels', icon: Filter, perm: 'behaviour.read', element: <Funnels /> },
+    { path: '/admin/behaviour/recommendations', name: 'Recommendations', icon: Sparkles, perm: 'behaviour.read', element: <Recommendations /> },
+    { path: '/admin/behaviour/content', name: 'Content & wardrobe', icon: Shirt, perm: 'behaviour.read', element: <ContentWardrobe /> },
+    { path: '/admin/behaviour/segments', name: 'Segments', icon: Boxes, perm: 'behaviour.read', element: <Segments /> },
+    { path: '/admin/behaviour/timeline', name: 'Timeline', icon: History, perm: 'users.timeline', element: <Timeline /> },
+    { path: '/admin/behaviour/training', name: 'Training data', icon: Database, perm: 'behaviour.read', element: <Training /> },
   ] },
   { group: 'AI & Costs', items: [
     { path: '/admin/ai', name: 'AI & Costs', icon: Cpu, perm: 'ai.read', element: <AiCosts /> },

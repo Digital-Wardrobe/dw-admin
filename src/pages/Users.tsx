@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Search, Eye, X } from 'lucide-react';
 import { useAdminApi } from '../lib/useAdminApi';
 import { adminSend, API_ROOT } from '../lib/api';
+import { Link } from 'react-router-dom';
 import { useMe } from '../lib/me';
 import { PageHeader, Card, Badge, InlineError, EmptyState, Skeleton } from '../components/ui';
 import { ExportButton, th, td, fmtN, fmtUsd } from '../components/dash';
@@ -53,6 +54,9 @@ function Profile({ refId, onClose, onChanged }: { refId: string; onClose: () => 
             <Badge>source: {p.source}{p.invited ? ' (invited)' : ''}</Badge>
             <Badge tone={p.settings.personalizationConsent ? 'ok' : 'neutral'}>{p.settings.personalizationConsent ? 'personalisation on' : 'personalisation off'}</Badge>
           </div>
+          {p.settings.personalizationConsent && can('users.timeline') && (
+            <Link to={`/admin/behaviour/timeline?ref=${encodeURIComponent(refId)}&pid=${p.pid}`} className="inline-block text-xs text-brand hover:underline">Activity timeline (logged)</Link>
+          )}
 
           {who ? (
             <dl className="grid grid-cols-2 gap-2 rounded-inner border border-warn/30 bg-ink-850 p-3 text-xs">

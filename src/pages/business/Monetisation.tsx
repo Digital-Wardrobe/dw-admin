@@ -1,10 +1,9 @@
 import { useAdminApi } from '../../lib/useAdminApi';
 import { PageHeader, InlineError, EmptyState, Skeleton, StatTileSkeleton } from '../../components/ui';
 import {
-  DashControls, useDashParams, useHashScroll, Kpi, ChartCard, ExportButton, ShareBar,
+  DashControls, useDashParams, useHashScroll, Kpi, ChartCard, ExportButton, ShareBar, FunnelBars,
   th, td, fmtN, fmtInr, fmtPct, Grid,
 } from '../../components/dash';
-import { CHART } from '../../chartColors';
 
 /* From hitting a plan limit to paying, where people drop out, which limits push them there,
    and, per plan, what a paying person brings in against what they cost us. */
@@ -58,23 +57,7 @@ export default function Monetisation() {
             <ChartCard title="Upgrade flow" caption="Each step as a share of the first, with the share that went on from the step before." asOf={d?.asOf}
               actions={<ExportButton path="business/monetisation" params={query} table="flow" />}>
               {!d ? <Skeleton className="h-64 w-full" /> : !first && !step('paywall_view') ? <EmptyState title="Nothing yet" body="The flow fills in when people hit a limit or open the Plans page." /> : (
-                <ol className="space-y-2.5">
-                  {d.steps.map((s: any, i: number) => {
-                    const pct = first ? s.people / first : 0;
-                    return (
-                      <li key={s.type} className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 sm:grid-cols-[minmax(9rem,14rem)_1fr_auto]">
-                        <span className="text-sm text-ink-100">{s.label}</span>
-                        <div className="col-span-2 row-start-2 h-6 w-full rounded-inner bg-ink-800 sm:col-span-1 sm:row-start-auto">
-                          <div className="h-6 rounded-inner" style={{ width: `${Math.max(1, Math.min(100, pct * 100))}%`, background: CHART.brand, opacity: 1 - i * 0.1 }} />
-                        </div>
-                        <span data-numeric className="col-start-2 row-start-1 text-right text-xs text-ink-300 sm:col-start-auto sm:row-start-auto sm:w-44">
-                          <span className="mr-2 text-ink-100">{fmtN(s.people)}</span>
-                          {s.fromPrevious != null ? <><span className={s.fromPrevious < 0.2 ? 'text-warn' : 'text-ink-100'}>{fmtPct(s.fromPrevious, 0)}</span> of previous</> : 'start'}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ol>
+                <FunnelBars steps={d.steps.map((s: any) => ({ key: s.type, label: s.label, people: s.people, fromPrevious: s.fromPrevious }))} />
               )}
             </ChartCard>
           </div>

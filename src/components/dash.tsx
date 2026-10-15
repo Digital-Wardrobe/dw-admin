@@ -310,3 +310,36 @@ export function ShareBar({ pct, colour = CHART.brand, label }: { pct: number | n
     </div>
   );
 }
+
+export type FunnelStep = { key: string; label: string; people: number; fromPrevious: number | null; medianHours?: number | null };
+const fmtHours = (h: number) => (h < 1 ? `${Math.round(h * 60)} min` : h < 48 ? `${h.toFixed(h < 10 ? 1 : 0)} h` : `${(h / 24).toFixed(1)} d`);
+
+/**
+ * Steps as bars against the first, with the share that went on from the step before (and the median
+ * wait, when known). mode "start": steps are milestones that needn't happen in order, so each is shown
+ * as a share of the first step instead.
+ */
+export function FunnelBars({ steps, warnBelow = 0.2, mode = 'previous' }: { steps: FunnelStep[]; warnBelow?: number; mode?: 'previous' | 'start' }) {
+  const first = steps[0]?.people || 0;
+  return (
+    <ol className="space-y-2.5">
+      {steps.map((s, i) => {
+        const pct = first ? s.people / first : 0;
+        return (
+          <li key={s.key + i} className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1 sm:grid-cols-[minmax(9rem,14rem)_1fr_auto]">
+            <span className="text-sm text-ink-100">{s.label}</span>
+            <div className="col-span-2 row-start-2 h-6 w-full rounded-inner bg-ink-800 sm:col-span-1 sm:row-start-auto">
+              <div className="h-6 rounded-inner" style={{ width: `${Math.max(1, Math.min(100, pct * 100))}%`, background: CHART.brand, opacity: Math.max(0.35, 1 - i * 0.09) }} />
+            </div>
+            <span data-numeric className="col-start-2 row-start-1 text-right text-xs text-ink-300 sm:col-start-auto sm:row-start-auto sm:w-52">
+              <span className="mr-2 text-ink-100">{fmtN(s.people)}</span>
+              {i === 0 ? 'start' : mode === 'start' ? <><span className="text-ink-100">{fmtPct(pct, 0)}</span> of {steps[0].label.toLowerCase()}</>
+                : s.fromPrevious != null ? <><span className={s.fromPrevious < warnBelow ? 'text-warn' : 'text-ink-100'}>{fmtPct(s.fromPrevious, 0)}</span> of previous</> : '–'}
+              {s.medianHours != null && <span className="ml-1 text-ink-400">· {fmtHours(s.medianHours)}</span>}
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}

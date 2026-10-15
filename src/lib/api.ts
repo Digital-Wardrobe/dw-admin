@@ -54,3 +54,20 @@ export async function downloadCsv(path: string, params: Record<string, string | 
     failure(err);
   }
 }
+
+/** Download a file endpoint (e.g. a training dataset); the server checks the permission and logs it. */
+export async function downloadFile(path: string, fallbackName: string) {
+  try {
+    const res = await axios.get(`${API_BASE_URL}${path}`, { headers: auth(), responseType: 'blob' });
+    const name = /filename="([^"]+)"/.exec(res.headers['content-disposition'] || '')?.[1] || fallbackName;
+    const url = URL.createObjectURL(res.data);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } catch (err: any) {
+    if (err?.response?.data instanceof Blob) {
+      try { err.response.data = JSON.parse(await err.response.data.text()); } catch { /* keep as is */ }
+    }
+    failure(err);
+  }
+}
