@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Download, Loader2 } from 'lucide-react';
 import { Card, Badge } from './ui';
 import { useMe } from '../lib/me';
@@ -263,4 +263,50 @@ export function useDebounced<T>(value: T, ms = 400) {
 export function Grid({ cols = 4, children }: { cols?: 2 | 3 | 4 | 5; children: React.ReactNode }) {
   const c = { 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-4', 5: 'lg:grid-cols-5' }[cols];
   return <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${c}`}>{children}</div>;
+}
+
+/** Scroll to #anchor once the section has rendered (links from the "where we're lacking" list). */
+export function useHashScroll(ready: boolean) {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (!ready || !hash) return;
+    const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [ready, hash]);
+}
+
+/** In place of a number that can't exist yet (no payments, too little history). */
+export function NoData({ text = 'no data yet' }: { text?: string }) {
+  return <span className="text-base font-normal text-ink-400">{text}</span>;
+}
+
+/** This month as YYYY-MM, and a month shifted by n. */
+export const thisMonth = () => new Date().toISOString().slice(0, 7);
+export const shiftMonth = (m: string, n: number) => { const d = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7) - 1 + n, 1)); return d.toISOString().slice(0, 7); };
+export const fmtMonth = (m: string) => new Date(`${m}-01T00:00:00`).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+
+/** ‹ October 2026 › */
+export function MonthPicker({ value, onChange, max = thisMonth() }: { value: string; onChange: (m: string) => void; max?: string }) {
+  const btn = 'rounded-inner border border-ink-600 px-2 py-1 text-xs text-ink-300 transition hover:border-brand-line hover:text-brand disabled:opacity-40';
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <button className={btn} onClick={() => onChange(shiftMonth(value, -1))} aria-label="Previous month">‹</button>
+      <span className="min-w-[8.5rem] text-center text-xs font-medium text-ink-100">{fmtMonth(value)}</span>
+      <button className={btn} onClick={() => onChange(shiftMonth(value, 1))} disabled={value >= max} aria-label="Next month">›</button>
+    </span>
+  );
+}
+
+export const inputCls = 'h-8 rounded-inner border border-ink-600 bg-ink-800 px-2 text-xs text-ink-100 transition hover:border-brand-line focus:border-brand';
+export const btnCls = 'inline-flex items-center gap-1.5 rounded-inner border border-ink-600 px-3 py-1.5 text-xs font-medium text-ink-100 transition hover:border-brand-line hover:text-brand disabled:opacity-50';
+export const primaryBtnCls = 'h-8 rounded-inner bg-brand px-3 text-xs font-medium text-ink-950 transition hover:opacity-90 disabled:opacity-50';
+
+/** A share of a whole (no thresholds, unlike Meter): plan mix, sources, counts. */
+export function ShareBar({ pct, colour = CHART.brand, label }: { pct: number | null | undefined; colour?: string; label?: string }) {
+  const p = isNum(pct) ? Math.max(0, Math.min(1, pct)) : 0;
+  return (
+    <div className="h-2 w-full rounded-full bg-ink-700" role="img" aria-label={label ? `${label}: ${Math.round(p * 100)}%` : undefined}>
+      <div className="h-2 rounded-full" style={{ width: `${p * 100}%`, background: colour }} />
+    </div>
+  );
 }

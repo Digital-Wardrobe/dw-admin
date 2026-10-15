@@ -30,34 +30,6 @@ const FIXTURES: Record<string, any> = {
       ],
     },
   },
-  'growth-analytics': {
-    success: true,
-    metrics: {
-      userVelocity: [
-        { date: 'Mar 3',  count: 218 }, { date: 'Mar 10', count: 347 },
-        { date: 'Mar 17', count: 291 }, { date: 'Mar 24', count: 508 },
-        { date: 'Mar 31', count: 664 }, { date: 'Apr 7',  count: 592 },
-        { date: 'Apr 14', count: 803 },
-      ],
-      userStates: [
-        { name: 'Onboarded', value: 9214 },
-        { name: 'Signed up, not onboarded', value: 2418 },
-        { name: 'Dormant 30d+', value: 1215 },
-      ],
-      deviceDistribution: [
-        { name: 'iOS', value: 6841 }, { name: 'Android', value: 5772 }, { name: 'Web', value: 234 },
-      ],
-      geoDistribution: [
-        { country: 'India', count: 5142 }, { country: 'United Kingdom', count: 2318 },
-        { country: 'United States', count: 1976 }, { country: 'United Arab Emirates', count: 884 },
-        { country: 'Singapore', count: 617 },
-      ],
-      contentVelocity: [
-        { date: 'Mar 3', posts: 412, items: 1184 }, { date: 'Mar 17', posts: 688, items: 1902 },
-        { date: 'Mar 31', posts: 931, items: 2617 }, { date: 'Apr 14', posts: 1264, items: 3488 },
-      ],
-    },
-  },
   'users-directory': {
     success: true,
     data: {

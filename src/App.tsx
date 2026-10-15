@@ -2,11 +2,14 @@ import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation 
 import React, { Suspense, lazy, useState } from 'react';
 import {
   LayoutDashboard, TrendingUp, Users as UsersIcon, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
-  ToggleRight, Megaphone, Smartphone, ScrollText,
+  ToggleRight, Megaphone, Smartphone, ScrollText, IndianRupee, CreditCard, ShoppingBag,
 } from 'lucide-react';
 
 const Overview = lazy(() => import('./pages/Overview'));
-const BusinessMetrics = lazy(() => import('./pages/BusinessMetrics'));
+const Business = lazy(() => import('./pages/business/Business'));
+const Growth = lazy(() => import('./pages/business/Growth'));
+const Monetisation = lazy(() => import('./pages/business/Monetisation'));
+const Affiliate = lazy(() => import('./pages/business/Affiliate'));
 const Users = lazy(() => import('./pages/Users'));
 const Moderation = lazy(() => import('./pages/Moderation'));
 const Infrastructure = lazy(() => import('./pages/Infrastructure'));
@@ -40,7 +43,10 @@ export const NAV_GROUPS: { group: string; items: NavItem[] }[] = [
     { path: '/admin/ai/reconciliation', name: 'Reconciliation', icon: Receipt, perm: 'ai.read', element: <Reconciliation /> },
   ] },
   { group: 'Business', items: [
-    { path: '/admin/business', name: 'Growth', icon: TrendingUp, perm: 'business.read', element: <BusinessMetrics /> },
+    { path: '/admin/business', name: 'Business', icon: IndianRupee, perm: 'business.read', element: <Business /> },
+    { path: '/admin/business/growth', name: 'Growth', icon: TrendingUp, perm: 'business.read', element: <Growth /> },
+    { path: '/admin/business/monetisation', name: 'Monetisation', icon: CreditCard, perm: 'business.read', element: <Monetisation /> },
+    { path: '/admin/business/affiliate', name: 'Affiliate', icon: ShoppingBag, perm: 'business.read', element: <Affiliate /> },
   ] },
   { group: 'Operations', items: [
     { path: '/admin/users', name: 'Users', icon: UsersIcon, perm: 'users.read', element: <Users /> },
