@@ -9,7 +9,7 @@ import { ChartCard, AsOf, th, td, fmtN, fmtPct } from '../../components/dash';
    segment and are measured by how many people opened them (push_open). People who turned off
    "News from Fluntr" never get a push. */
 
-const PLANS = ['FREE', 'PLUS', 'PRO', 'STUDIO'];
+const PLANS = ['FREE', 'PRO', 'STUDIO'];
 const input = 'h-8 rounded-inner border border-ink-600 bg-ink-800 px-2 text-sm text-ink-100';
 const STATUS_TONE: Record<string, any> = { draft: 'neutral', scheduled: 'brand', sending: 'warn', sent: 'ok', cancelled: 'neutral' };
 

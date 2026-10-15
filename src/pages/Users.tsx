@@ -112,7 +112,7 @@ function Profile({ refId, onClose, onChanged }: { refId: string; onClose: () => 
             <div className="space-y-2 border-t border-ink-700 pt-4">
               <p className="text-label uppercase text-ink-400">Actions (each needs a reason and is logged)</p>
               <div className="flex flex-wrap items-center gap-2">
-                <select aria-label="Plan" value={plan} onChange={(e) => setPlan(e.target.value)} className="h-7 rounded-inner border border-ink-600 bg-ink-800 px-1 text-xs text-ink-100">{['PLUS', 'PRO', 'STUDIO'].map((x) => <option key={x}>{x}</option>)}</select>
+                <select aria-label="Plan" value={plan} onChange={(e) => setPlan(e.target.value)} className="h-7 rounded-inner border border-ink-600 bg-ink-800 px-1 text-xs text-ink-100">{['PRO', 'STUDIO'].map((x) => <option key={x}>{x}</option>)}</select>
                 <input aria-label="Days" type="number" min={1} max={366} value={days} onChange={(e) => setDays(e.target.value)} className="h-7 w-16 rounded-inner border border-ink-600 bg-ink-800 px-1 text-xs text-ink-100" />
                 <span className="text-xs text-ink-400">days</span>
                 <button className={btn} onClick={() => { const reason = ask(`Grant ${plan} for ${days} days to ${p.pid}. Reason:`); if (reason) run('Grant', () => adminSend('POST', `${API_ROOT}billing/admin/grant`, { ref: refId, plan, days: Number(days), note: reason })); }}>Grant</button>

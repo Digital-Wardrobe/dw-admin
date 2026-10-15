@@ -16,7 +16,7 @@ import { CHART, colourFor } from '../../chartColors';
    gateway fees) and comes only from store and gateway payments; admin and promo grants are
    "comped". Until the first payment, money figures say "no data yet" instead of showing zero. */
 
-const PLAN_KEYS = ['PLUS', 'PRO', 'STUDIO'];
+const PLAN_KEYS = ['PRO', 'STUDIO'];
 const SEVERITY: Record<string, 'bad' | 'warn' | 'neutral'> = { high: 'bad', medium: 'warn', low: 'neutral' };
 const INR_METRICS = new Set(['net_revenue_inr', 'mrr_inr']);
 const fmtTarget = (metric: string, v: any) => (INR_METRICS.has(metric) ? fmtInr(v) : fmtN(v));

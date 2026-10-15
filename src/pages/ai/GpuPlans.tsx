@@ -16,17 +16,24 @@ type PerPlan = Record<string, number | null>;
 type Settings = {
   canEdit: boolean;
   plans: string[];
-  limits: Record<string, { window: string; defaults: PerPlan; current: PerPlan }>;
+  limits: Record<string, { window: string; windows?: Record<string, string>; defaults: PerPlan; current: PerPlan }>;
   settings: Record<string, { defaults: PerPlan; current: PerPlan }>;
   gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>; group?: Record<string, number>;
   defaults: { gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>; group?: Record<string, number> };
 };
 
 const FEATURE_LABEL: Record<string, string> = {
-  items: 'Wardrobe items', collections: 'Collections', scan: 'Smart Scan', scanDaily: 'Smart Scan (daily)',
-  beautify: 'Beautify', beautifyPro: 'Beautify Pro', tryon: 'Virtual try-on', fitcheck: 'Fit check',
-  kween: 'Kween messages', beautifyBulkDay: 'Bulk Beautify (daily)', beautifyBatch: 'Bulk batch size',
-  plannerDays: 'Planner range (days)', historyDays: 'Outfit history (days)',
+  kween: 'Kween questions', reroll: '“Show me another” outfits', fitcheck: 'Fit check',
+  items: 'Wardrobe size (pieces owned)', pieces: 'New pieces (one by one)', piecesDaily: 'New pieces (daily)', collections: 'Collections',
+  scan: 'Smart Scan', scanWelcome: 'Welcome Smart Scans (once)', scanDaily: 'Smart Scan (daily)',
+  beautify: 'Studio shots (Beautify)', beautifyPro: 'Beautify Pro', tryon: 'Virtual try-on', beautifyBulkDay: 'Bulk Beautify (daily)',
+  beautifyBatch: 'Bulk batch size', plannerDays: 'Planner range (days)', historyDays: 'Outfit history (days)',
+  followupsPerPhoto: 'Fit-check follow-ups per photo (not live yet)', kweenFairUse: 'Kween fair use a day (only where unlimited)',
+};
+/** "day", or "day (FREE: week)" when one plan counts over a different window. */
+const windowText = (r: { window: string; windows?: Record<string, string> }) => {
+  const odd = Object.entries(r.windows || {}).filter(([, w]) => w !== r.window);
+  return odd.length ? `${r.window} (${odd.map(([p, w]) => `${p}: ${w}`).join(', ')})` : r.window;
 };
 const GPU_LABEL: Record<string, string> = {
   maxGpus: 'Max GPUs (keep at or under Modal’s FLUNTR_MAX_CONTAINERS)', coldSec: 'Cold start (s)', secPerImage: 'Seconds per image (starting guess)',
@@ -114,7 +121,7 @@ function PlanTable({ section, rows, plans, canEdit, onSaved, saved }: {
             {Object.entries(rows).map(([k, r]) => (
               <tr key={k} className="border-t border-ink-700">
                 <td className={td}>{FEATURE_LABEL[k] ?? k}</td>
-                {section === 'limits' && <td className={`${td} text-ink-400`}>{(r as any).window}</td>}
+                {section === 'limits' && <td className={`${td} text-ink-400`}>{windowText(r as any)}</td>}
                 {plans.map((p) => {
                   const v = draft[k]?.[p] ?? '';
                   const custom = v !== shown(r.defaults[p]);

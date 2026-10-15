@@ -8,7 +8,7 @@ import { ChartCard, th, td } from '../../components/dash';
 /* Feature flags: on or off, limited to plans, rolled out to a share of people. The app reads
    them from GET /api/app/config within a minute; the same people stay in as the share grows. */
 
-const PLANS = ['FREE', 'PLUS', 'PRO', 'STUDIO'];
+const PLANS = ['FREE', 'PRO', 'STUDIO'];
 const input = 'h-8 rounded-inner border border-ink-600 bg-ink-800 px-2 text-sm text-ink-100';
 
 function FlagForm({ initial, onSave, onCancel }: { initial?: any; onSave: (key: string, f: any) => Promise<void>; onCancel: () => void }) {
