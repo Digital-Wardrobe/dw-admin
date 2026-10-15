@@ -18,8 +18,8 @@ type Settings = {
   plans: string[];
   limits: Record<string, { window: string; defaults: PerPlan; current: PerPlan }>;
   settings: Record<string, { defaults: PerPlan; current: PerPlan }>;
-  gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>;
-  defaults: { gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number> };
+  gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>; group?: Record<string, number>;
+  defaults: { gpu: Record<string, number>; qc: Record<string, number>; retry: Record<string, number>; group?: Record<string, number> };
 };
 
 const FEATURE_LABEL: Record<string, string> = {
@@ -39,6 +39,9 @@ const QC_LABEL: Record<string, string> = {
   minBorderWhite: 'Min white border (0–1)', maxPersonProb: 'Max “person or mannequin” score (0–1)',
 };
 const RETRY_LABEL: Record<string, string> = { maxFree: 'Free retries per studio shot' };
+const GROUP_LABEL: Record<string, string> = {
+  sameOutfit: 'Same outfit at similarity of at least (0–1)', unsureBand: 'Ask the person when within this of it',
+};
 
 const shown = (v: number | null | undefined) => (v === null || v === undefined ? '' : String(v));
 const numCls = `${inputCls} w-20 text-right font-mono disabled:opacity-60`;
@@ -138,7 +141,7 @@ function PlanTable({ section, rows, plans, canEdit, onSaved, saved }: {
 
 /** Flat number settings (gpu / qc / retry). */
 function NumberForm({ section, values, defaults, labels, canEdit, onSaved, saved }: {
-  section: 'gpu' | 'qc' | 'retry'; values: Record<string, number>; defaults: Record<string, number>; labels: Record<string, string>; canEdit: boolean; onSaved: () => void; saved?: boolean;
+  section: 'gpu' | 'qc' | 'retry' | 'group'; values: Record<string, number>; defaults: Record<string, number>; labels: Record<string, string>; canEdit: boolean; onSaved: () => void; saved?: boolean;
 }) {
   const [draft, setDraft] = useState<Record<string, string>>(() => Object.fromEntries(Object.entries(values).map(([k, v]) => [k, String(v)])));
   const changes: Change[] = Object.entries(values).filter(([k, v]) => draft[k] !== undefined && draft[k] !== String(v)).map(([k, v]) => ({ key: labels[k] ?? k, from: String(v), to: draft[k] }));
@@ -301,6 +304,11 @@ export default function GpuPlans() {
               <ChartCard title="Retries" caption="Free retries; after the last one the app offers a support ticket.">
                 <NumberForm key={JSON.stringify(cfg.data.retry)} section="retry" values={cfg.data.retry} defaults={cfg.data.defaults.retry} labels={RETRY_LABEL} canEdit={canEdit} onSaved={done('retry')} saved={saved === 'retry'} />
               </ChartCard>
+              {cfg.data.group && cfg.data.defaults.group && (
+                <ChartCard title="Multi-photo scan" caption="When photos count as one outfit (one scan use). Near the line, the app asks the person to confirm.">
+                  <NumberForm key={JSON.stringify(cfg.data.group)} section="group" values={cfg.data.group} defaults={cfg.data.defaults.group} labels={GROUP_LABEL} canEdit={canEdit} onSaved={done('group')} saved={saved === 'group'} />
+                </ChartCard>
+              )}
             </div>
           </div>
         </div>
