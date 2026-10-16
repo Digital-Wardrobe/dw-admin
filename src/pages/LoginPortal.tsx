@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { Lock, User, Eye, EyeOff, AlertTriangle, Loader2 } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, AlertTriangle, Loader2, Info } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { STAFF_ROLES } from '../lib/me';
 
 export default function LoginPortal() {
+  const [params] = useSearchParams();
+  const ended = params.get('ended');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -81,6 +84,15 @@ export default function LoginPortal() {
           </p>
         </div>
 
+        {ended && !error && (
+          <div role="status" className="mb-4 flex items-start gap-2.5 rounded-inner border border-ink-700 bg-ink-850 px-3 py-2.5">
+            <Info size={15} className="mt-0.5 shrink-0 text-ink-300" aria-hidden="true" />
+            <p className="text-sm leading-snug text-ink-200">
+              {ended === 'password' ? 'The password for this account was changed, so you were signed out. Sign in with the new password.' : 'Your session ended. Sign in again.'}
+            </p>
+          </div>
+        )}
+
         <form onSubmit={handleSignIn} noValidate className="space-y-4">
           <div>
             <label htmlFor="identifier" className="mb-1.5 block text-sm font-medium text-ink-100">
@@ -102,9 +114,15 @@ export default function LoginPortal() {
           </div>
 
           <div>
-            <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-ink-100">
-              Password
-            </label>
+            <div className="mb-1.5 flex items-baseline justify-between">
+              <label htmlFor="password" className="block text-sm font-medium text-ink-100">
+                Password
+              </label>
+              <Link to={`/portal/reset-password${identifier.trim() ? `?u=${encodeURIComponent(identifier.trim())}` : ''}`}
+                className="text-xs text-ink-300 underline-offset-4 transition hover:text-ink-50 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
             <div className="relative">
               <Lock size={16} strokeWidth={1.75} aria-hidden="true"
                     className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
@@ -147,7 +165,7 @@ export default function LoginPortal() {
         </form>
 
         <p className="mt-8 text-xs leading-relaxed text-ink-400">
-          Locked out? Another administrator can reset your password from the Team section.
+          Forgot your password? We’ll email a code to the address on your admin account.
         </p>
       </main>
     </div>

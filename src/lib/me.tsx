@@ -31,6 +31,12 @@ export function MeProvider({ children }: { children: React.ReactNode }) {
         if (!live) return;
         const status = e?.response?.status;
         if (status === 401 || status === 403) { localStorage.removeItem('admin_me'); setMe(null); }
+        // The session has ended (expired, or the password was changed): back to sign-in, saying why
+        if (status === 401) {
+          ['admin_session_token', 'admin_user'].forEach((k) => localStorage.removeItem(k));
+          window.location.assign(`/portal/secure-gateway-entry?ended=${e?.response?.data?.code === 'SESSION_ENDED' ? 'password' : 'session'}`);
+          return;
+        }
         setError(status === 401 || status === 403 ? 'Your session has ended. Sign in again.' : 'Could not check your access.');
       })
       .finally(() => live && setLoading(false));

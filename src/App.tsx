@@ -3,7 +3,7 @@ import React, { Suspense, lazy, useState } from 'react';
 import {
   LayoutDashboard, TrendingUp, Users as UsersIcon, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
   ToggleRight, Megaphone, Smartphone, ScrollText, IndianRupee, CreditCard, ShoppingBag,
-  Activity, Filter, Sparkles, Shirt, Boxes, History, Database, Gauge, LifeBuoy, Ticket,
+  Activity, Filter, Sparkles, Shirt, Boxes, History, Database, Gauge, LifeBuoy, Ticket, KeyRound,
 } from 'lucide-react';
 
 const Overview = lazy(() => import('./pages/Overview'));
@@ -27,6 +27,8 @@ const FeatureFlags = lazy(() => import('./pages/ops/FeatureFlags'));
 const Campaigns = lazy(() => import('./pages/ops/Campaigns'));
 const AppVersions = lazy(() => import('./pages/ops/AppVersions'));
 import LoginPortal from './pages/LoginPortal';
+import AdminPasswordReset from './pages/AdminPasswordReset';
+import ChangePassword from './components/ChangePassword';
 const AiCosts = lazy(() => import('./pages/ai/AiCosts'));
 const MoveOrKeep = lazy(() => import('./pages/ai/MoveOrKeep'));
 const Alerts = lazy(() => import('./pages/ai/Alerts'));
@@ -113,6 +115,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   };
 
   const { me, can } = useMe();
+  const [changingPassword, setChangingPassword] = useState(false);
   const groups = NAV_GROUPS.map((g) => ({ ...g, items: g.items.filter((i) => can(i.perm)) })).filter((g) => g.items.length);
   const current = NAV.find(i => i.path === location.pathname);
 
@@ -187,6 +190,13 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         <div className="hidden space-y-0.5 border-ink-700 p-3 lg:block lg:border-t">
           <ThemeToggle />
           <button
+            onClick={() => setChangingPassword(true)}
+            className="flex w-full items-center gap-3 rounded-inner px-3 py-2 text-sm text-ink-300 transition hover:bg-ink-800 hover:text-ink-50 active:translate-y-px"
+          >
+            <KeyRound size={16} strokeWidth={1.75} aria-hidden="true" />
+            Change password
+          </button>
+          <button
             onClick={signOut}
             className="flex w-full items-center gap-3 rounded-inner px-3 py-2 text-sm text-ink-300 transition hover:bg-ink-800 hover:text-bad active:translate-y-px"
           >
@@ -196,6 +206,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
+      {changingPassword && <ChangePassword onClose={() => setChangingPassword(false)} />}
       <main id="main" className="pt-[116px] lg:pl-60 lg:pt-0">
         {/* Bottom padding slightly exceeds top so the page reads optically
             centred rather than mathematically so. */}
@@ -241,6 +252,7 @@ export default function App() {
       <MeProvider>
         <Routes>
           <Route path="/portal/secure-gateway-entry" element={<LoginPortal />} />
+          <Route path="/portal/reset-password" element={<AdminPasswordReset />} />
           <Route path="/admin" element={<AuthGuard><Home /></AuthGuard>} />
           {NAV.map((i) => <Route key={i.path} path={i.path} element={guarded(i.element, i.perm)} />)}
           {/* Both of these must point at the login route, not at a guarded page:
