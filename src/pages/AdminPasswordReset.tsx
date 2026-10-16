@@ -7,7 +7,7 @@ import { API_BASE_URL } from '../config';
 /**
  * "Forgot password" for admin console accounts: a 6-digit code goes to the account's own email,
  * then a new password. The server answers the same whether or not the account exists, and a new
- * password signs out every other session.
+ * password signs out every session of the account.
  */
 
 const ROOT = `${API_BASE_URL.replace(/\/$/, '').replace(/\/admin$/, '')}/auth/admin`;
@@ -75,7 +75,7 @@ export default function AdminPasswordReset() {
             <CheckCircle2 size={36} strokeWidth={1.5} className="mb-4 text-ok" aria-hidden="true" />
             <h1 className="text-xl font-semibold tracking-tight text-ink-50">Password changed</h1>
             <p className="mt-1.5 text-sm leading-relaxed text-ink-300">
-              Every other session was signed out, and we emailed the account to say so. Sign in with your new password.
+              Every session of this account was signed out, and we emailed the account to say so. Sign in with your new password.
             </p>
             <Link to="/portal/secure-gateway-entry" className={`${primary} mt-6`}>Sign in</Link>
           </div>

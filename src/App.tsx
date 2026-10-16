@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import React, { Suspense, lazy, useState } from 'react';
 import {
   LayoutDashboard, TrendingUp, Users as UsersIcon, Server, UserPlus, LogOut, ShieldAlert, Cpu, Scale, BellRing, Receipt, Tags, Sun, Moon, Monitor,
@@ -29,6 +29,8 @@ const AppVersions = lazy(() => import('./pages/ops/AppVersions'));
 import LoginPortal from './pages/LoginPortal';
 import AdminPasswordReset from './pages/AdminPasswordReset';
 import ChangePassword from './components/ChangePassword';
+import { SessionProvider, SessionCard, SessionPill, SessionWarning } from './components/SessionClock';
+import { signOut } from './lib/session';
 const AiCosts = lazy(() => import('./pages/ai/AiCosts'));
 const MoveOrKeep = lazy(() => import('./pages/ai/MoveOrKeep'));
 const Alerts = lazy(() => import('./pages/ai/Alerts'));
@@ -104,22 +106,14 @@ function ThemeToggle() {
 }
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
-  const navigate = useNavigate();
   const location = useLocation();
-
-  const signOut = () => {
-    localStorage.removeItem('admin_session_token');
-    localStorage.removeItem('admin_user');
-    localStorage.removeItem('admin_me');
-    navigate('/portal/secure-gateway-entry');
-  };
-
   const { me, can } = useMe();
   const [changingPassword, setChangingPassword] = useState(false);
   const groups = NAV_GROUPS.map((g) => ({ ...g, items: g.items.filter((i) => can(i.perm)) })).filter((g) => g.items.length);
   const current = NAV.find(i => i.path === location.pathname);
 
   return (
+    <SessionProvider>
     <div className="grain min-h-dvh bg-ink-900 text-ink-100 antialiased selection:bg-brand/30 selection:text-ink-50">
       {/* Keyboard users need a way past the navigation. */}
       <a
@@ -145,6 +139,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
               <p className="truncate text-sm font-semibold tracking-tight text-ink-50">Fluntr</p>
               <p className="truncate text-label text-ink-400">{me ? `${me.name} · ${me.role.toLowerCase()}` : 'Admin console'}</p>
             </div>
+            <SessionPill />
           </div>
 
           <nav className="px-3 pb-3 lg:flex-1 lg:overflow-y-auto lg:p-3">
@@ -188,6 +183,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
         {/* One sign-out in the whole console. Pages used to carry their own. */}
         <div className="hidden space-y-0.5 border-ink-700 p-3 lg:block lg:border-t">
+          <SessionCard />
           <ThemeToggle />
           <button
             onClick={() => setChangingPassword(true)}
@@ -197,7 +193,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             Change password
           </button>
           <button
-            onClick={signOut}
+            onClick={() => signOut()}
             className="flex w-full items-center gap-3 rounded-inner px-3 py-2 text-sm text-ink-300 transition hover:bg-ink-800 hover:text-bad active:translate-y-px"
           >
             <LogOut size={16} strokeWidth={1.75} aria-hidden="true" />
@@ -207,6 +203,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {changingPassword && <ChangePassword onClose={() => setChangingPassword(false)} />}
+      <SessionWarning />
       <main id="main" className="pt-[116px] lg:pl-60 lg:pt-0">
         {/* Bottom padding slightly exceeds top so the page reads optically
             centred rather than mathematically so. */}
@@ -216,6 +213,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         </div>
       </main>
     </div>
+    </SessionProvider>
   );
 }
 

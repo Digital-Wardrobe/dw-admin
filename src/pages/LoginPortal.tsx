@@ -4,6 +4,14 @@ import axios from 'axios';
 import { Lock, User, Eye, EyeOff, AlertTriangle, Loader2, Info } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { STAFF_ROLES } from '../lib/me';
+import { saveSession } from '../lib/session';
+
+// Why you're back here (lib/session.ts endSession)
+const ENDED: Record<string, string> = {
+  timeout: 'You were signed out because 2 hours passed since you signed in (or since you last extended). Sign in again.',
+  password: 'The password for this account was changed, so every session was signed out. Sign in with the new password.',
+  session: 'Your session ended. Sign in again.',
+};
 
 export default function LoginPortal() {
   const [params] = useSearchParams();
@@ -34,7 +42,7 @@ export default function LoginPortal() {
         return;
       }
 
-      const { accessToken, user } = res.data;
+      const { accessToken, user, sessionExpiresAt } = res.data;
       const isAdmin = STAFF_ROLES.includes(user?.role);
 
       if (!isAdmin) {
@@ -46,7 +54,7 @@ export default function LoginPortal() {
         return;
       }
 
-      localStorage.setItem('admin_session_token', accessToken);
+      saveSession(accessToken, sessionExpiresAt);
       localStorage.setItem('admin_user', JSON.stringify(user));
       localStorage.removeItem('admin_me');   // the role's pages are fetched fresh
       window.location.assign('/admin');      // full load so the access check starts clean
@@ -88,7 +96,7 @@ export default function LoginPortal() {
           <div role="status" className="mb-4 flex items-start gap-2.5 rounded-inner border border-ink-700 bg-ink-850 px-3 py-2.5">
             <Info size={15} className="mt-0.5 shrink-0 text-ink-300" aria-hidden="true" />
             <p className="text-sm leading-snug text-ink-200">
-              {ended === 'password' ? 'The password for this account was changed, so you were signed out. Sign in with the new password.' : 'Your session ended. Sign in again.'}
+              {ENDED[ended] || ENDED.session}
             </p>
           </div>
         )}

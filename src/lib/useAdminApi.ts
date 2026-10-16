@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
+import { endIfUnauthorized } from './session';
 
 /* ──────────────────────────────────────────────────────────────────────────
    Every page repeated the same twenty lines: read the token from
@@ -77,6 +78,7 @@ export function useAdminApi<T = any>(
         }
       } catch (err: any) {
         if (cancelled || axios.isCancel(err)) return;
+        if (endIfUnauthorized(err)) return;
         const status = err?.response?.status;
         setError(
           status === 401 || status === 403

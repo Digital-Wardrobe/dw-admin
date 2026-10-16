@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 import { getAdminToken } from './useAdminApi';
+import { endIfUnauthorized } from './session';
 
 /* Admin writes (and CSV downloads). Reads go through useAdminApi. */
 
@@ -15,6 +16,7 @@ export class ApiError extends Error {
 }
 
 function failure(err: any): never {
+  endIfUnauthorized(err);
   const status = err?.response?.status;
   const message =
     status === 401 ? 'Your session has ended. Sign in again.'

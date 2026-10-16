@@ -2,12 +2,18 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 import { getAdminToken } from './useAdminApi';
+import { endIfUnauthorized } from './session';
 
 /* Who is signed in and what their role can use (GET /api/admin/me). The server checks every
    request anyway; this only decides which pages and buttons to show. */
 
 export type Role = 'SUPERADMIN' | 'ADMIN' | 'ANALYST' | 'MODERATOR' | 'SUPPORT';
-export type Me = { id: string; name: string; role: Role; permissions: string[]; profile?: string | null; displayName?: string | null };
+export type Me = {
+  id: string; name: string; role: Role; permissions: string[]; profile?: string | null; displayName?: string | null;
+  /** 'admin' = a console account (2-hour sessions); 'user' = an app account with a staff role */
+  kind?: 'admin' | 'user';
+  session?: { expiresAt: string | null; serverNow: string };
+};
 export const STAFF_ROLES: Role[] = ['SUPERADMIN', 'ADMIN', 'ANALYST', 'MODERATOR', 'SUPPORT'];
 
 type Ctx = { me: Me | null; loading: boolean; error: string | null; can: (perm: string) => boolean; reload: () => void };
@@ -31,12 +37,8 @@ export function MeProvider({ children }: { children: React.ReactNode }) {
         if (!live) return;
         const status = e?.response?.status;
         if (status === 401 || status === 403) { localStorage.removeItem('admin_me'); setMe(null); }
-        // The session has ended (expired, or the password was changed): back to sign-in, saying why
-        if (status === 401) {
-          ['admin_session_token', 'admin_user'].forEach((k) => localStorage.removeItem(k));
-          window.location.assign(`/portal/secure-gateway-entry?ended=${e?.response?.data?.code === 'SESSION_ENDED' ? 'password' : 'session'}`);
-          return;
-        }
+        // The session has ended (2 hours up, signed out, password changed): back to sign-in, saying why
+        if (endIfUnauthorized(e)) return;
         setError(status === 401 || status === 403 ? 'Your session has ended. Sign in again.' : 'Could not check your access.');
       })
       .finally(() => live && setLoading(false));
